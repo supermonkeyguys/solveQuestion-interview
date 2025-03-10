@@ -89,3 +89,35 @@ var threeSum = function(nums) {
 };
 ```
 
+
+
+## [删除有序数组中的重复项 3/10---25](https://leetcode.cn/problems/remove-duplicates-from-sorted-array/?envType=study-plan-v2&envId=top-interview-150)
+
+```c++
+class Solution {
+public:
+    int removeDuplicates(vector<int>& nums) {
+        vector<int>noRep;
+        for(int i = 0 ; i < nums.size() ; i ++ ){
+            if(noRep.empty() || noRep.back() != nums[i])noRep.push_back(nums[i]);
+        }
+        nums = noRep;
+        return noRep.size();
+    }
+};
+```
+
+
+
+```javascript
+var removeDuplicates = function(nums) {
+    var index = 1;
+    for(var i = 1 ; i < nums.length ; i ++ ){
+        if(nums[i] !== nums[i - 1]){
+            nums[index ++ ] = nums[i];
+        }
+    }
+    return index;
+};
+```
+
