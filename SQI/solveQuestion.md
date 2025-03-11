@@ -121,3 +121,88 @@ var removeDuplicates = function(nums) {
 };
 ```
 
+
+
+## [零钱兑换 3/11---25](https://leetcode.cn/problems/coin-change/description/?envType=study-plan-v2&envId=top-interview-150)
+
+```c++
+class Solution {
+public:
+    int coinChange(vector<int>& coins, int amount) {
+        if(coins.size() == 0)return -1;
+        vector<int>coinsCount(amount + 1,amount + 1);
+        coinsCount[0] = 0;
+        for(int i = 1 ; i <= amount ; i ++ ){
+            for(auto coin : coins){
+                if(coin <= i)
+                coinsCount[i] = min(coinsCount[i],coinsCount[i - coin] + 1);
+            }
+        }
+        if(coinsCount[amount] > amount)return -1;
+        else return coinsCount[amount];
+    }
+};
+```
+
+
+
+```javascript
+var coinChange = function(coins, amount) {
+    var result = new Array(amount + 1).fill(amount + 1)
+    result[0] = 0;
+    coins.forEach(coin => {
+        for(var i = coin ; i <= amount ; i ++ ){
+            result[i] = Math.min(result[i],result[i - coin] + 1)
+        }
+    })
+    return result[amount] == amount + 1 ? -1 : result[amount]
+};
+```
+
+
+
+## [被围绕的区域 3/11---25](https://leetcode.cn/problems/surrounded-regions/submissions/608930518/?envType=study-plan-v2&envId=top-interview-150)
+
+```c++
+class Solution {
+private:
+    int dx[4] = {1,-1,0,0};
+    int dy[4] = {0,0,1,-1};
+public:
+    void solve(vector<vector<char>>& board) {
+        int n = board.size();
+        int m = board[0].size();
+        for(int i = 0 ; i < n ; i ++ ){
+            if(board[i][0] == 'O')dfs(i,0,board);
+            if(board[i][m - 1] == 'O')dfs(i,m - 1,board);
+        }
+        for(int i = 0 ; i < m ; i ++ ){
+            if(board[0][i] == 'O')dfs(0,i,board);
+            if(board[n - 1][i] == 'O')dfs(n - 1,i,board);
+        }
+
+        for(int i = 0 ; i < n ; i ++ ){
+            for(int j = 0 ; j < m ; j ++ ){
+                if(board[i][j] == 'O')board[i][j] = 'X';
+                if(board[i][j] == 'Y')board[i][j] = 'O';
+            }
+        }
+    }
+    void dfs(int x,int y,vector<vector<char>>& board){
+        int n = board.size();
+        int m = board[0].size();
+        if (x < 0 || x >= n || y < 0 || y >= m || board[x][y] != 'O') return;
+        board[x][y] = 'Y';
+
+        for(int i = 0 ; i < 4 ; i ++ ){
+            int x1 = x + dx[i];
+            int y1 = y + dy[i];
+            if(x1 >= 0 && x1 < n && y1 >= 0 && y1 < m){
+                dfs(x1,y1,board);
+            }
+        }
+
+    }
+};
+```
+
