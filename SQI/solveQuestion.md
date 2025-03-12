@@ -206,3 +206,66 @@ public:
 };
 ```
 
+
+
+## [插入区间 3/12---25](https://leetcode.cn/problems/insert-interval/description/?envType=study-plan-v2&envId=top-interview-150)
+
+```c++
+class Solution {
+public:
+    vector<vector<int>> insert(vector<vector<int>>& intervals, vector<int>& newInterval) {
+        vector<vector<int>>newIntervals;
+
+        intervals.push_back(newInterval);
+        sort(intervals.begin(),intervals.end());
+
+        for(int i = 0 ; i < intervals.size() ;){
+            int head = intervals[i][0];
+            int tail = intervals[i][1];
+            int j = i + 1;
+            while(j < intervals.size()){
+                if(tail >= intervals[j][0]){
+                    tail = max(tail,intervals[j][1]);
+                    j ++ ;
+                }
+                else break;
+            }
+            newIntervals.push_back({head,tail});
+            i = j;
+        }
+
+        return newIntervals;
+    }
+};
+```
+
+
+
+```javascript
+var insert = function(intervals, newInterval) {
+    var result = []
+
+    intervals.push(newInterval)
+    intervals.sort((a,b) => a[0] - b[0])
+
+    var n = intervals.length
+
+    for(var i = 0 ; i < n ;){
+        var head = intervals[i][0]
+        var tail = intervals[i][1]
+        var j = i + 1;
+        while(j < n){
+            if(tail >= intervals[j][0]){
+                tail = Math.max(tail,intervals[j][1])
+                j ++ ;
+            }
+            else break;
+        }
+        i = j;
+        result.push([head,tail]);
+    }
+
+    return result;
+};
+```
+
