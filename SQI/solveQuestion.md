@@ -269,3 +269,147 @@ var insert = function(intervals, newInterval) {
 };
 ```
 
+
+
+## [最小栈 3/13---25]([155. 最小栈 - 力扣（LeetCode）](https://leetcode.cn/problems/min-stack/description/?envType=study-plan-v2&envId=top-interview-150))
+
+```c++
+//不使用辅助栈
+class MinStack {
+private:
+    stack<long long>sp;
+    long long minValue = 0;
+public:
+    MinStack() {
+        
+    }
+    
+    void push(int val) {
+        if(sp.empty()){
+            sp.push(0LL);
+            minValue = val;
+        }
+        else {
+            sp.emplace((long long)val - minValue);
+            minValue = min(minValue,(long long)val);
+        }
+    }
+    
+    void pop() {
+        minValue -= min(sp.top(),0LL);
+        sp.pop();
+    }
+    
+    int top() {
+        return (int)(max(0LL,sp.top()) + minValue);
+    }
+    
+    int getMin() {
+        return (int)minValue;
+    }
+};
+//使用辅助栈
+class MinStack {
+private:
+    stack<int>sp;
+    stack<int>min_sp;
+public:
+    MinStack() {
+        min_sp.push(INT_MAX);
+    }
+    
+    void push(int val) {
+        sp.push(val);
+        min_sp.push(min(val,min_sp.top()));
+    }
+    
+    void pop() {
+        sp.pop();
+        min_sp.pop();
+    }
+    
+    int top() {
+        return sp.top();
+    }
+    
+    int getMin() {
+        return min_sp.top();
+    }
+};
+```
+
+
+
+```javascript
+var MinStack = function() {
+    this.result = []
+    this.minValue = 0;
+};
+
+/** 
+ * @param {number} val
+ * @return {void}
+ */
+MinStack.prototype.push = function(val) {
+    if(this.result.length === 0){
+        this.minValue = val;
+        this.result.push(0);
+    }
+    else {
+        this.result.push(val - this.minValue)
+        this.minValue = Math.min(val,this.minValue)
+    }
+};
+
+/**
+ * @return {void}
+ */
+MinStack.prototype.pop = function() {
+    this.minValue -= Math.min(this.result[this.result.length - 1],0);
+    this.result.pop();
+};
+
+/**
+ * @return {number}
+ */
+MinStack.prototype.top = function() {
+    //如果顶部为负数时代表此处更新最小值
+    //top() < 0 return minValue
+    //top() >= 0 return minValue + top()
+    return Math.max(0,this.result[this.result.length - 1]) + this.minValue;
+};
+
+/**
+ * @return {number}
+ */
+MinStack.prototype.getMin = function() {
+    return this.minValue
+};
+```
+
+
+
+## [寻找峰值 3/13---25](https://leetcode.cn/problems/find-peak-element/description/?envType=study-plan-v2&envId=top-interview-150)
+
+```javascript
+/**
+ * @param {number[]} nums
+ * @return {number}
+ */
+var findPeakElement = function(nums) {
+    var left = 0 , right = nums.length - 1;
+    while(left < right){
+        var mid = (left + right) >> 1;
+        //当中间为升序，峰值一定在右半区（最右看成负无穷）
+        if(nums[mid] < nums[mid + 1]){
+            left = mid + 1;
+        }
+        //为降序，峰值在左半区
+        else {
+            right = mid;
+        }
+    }
+    return left;
+};
+```
+
