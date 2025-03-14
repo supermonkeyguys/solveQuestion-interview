@@ -413,3 +413,79 @@ var findPeakElement = function(nums) {
 };
 ```
 
+
+
+## [克隆图 3/14---25](https://leetcode.cn/problems/clone-graph/description/?envType=study-plan-v2&envId=top-interview-150)
+
+```c++
+/*
+// Definition for a Node.
+class Node {
+public:
+    int val;
+    vector<Node*> neighbors;
+    Node() {
+        val = 0;
+        neighbors = vector<Node*>();
+    }
+    Node(int _val) {
+        val = _val;
+        neighbors = vector<Node*>();
+    }
+    Node(int _val, vector<Node*> _neighbors) {
+        val = _val;
+        neighbors = _neighbors;
+    }
+};
+*/
+
+class Solution {
+private:
+    Node* visited[101] = {nullptr};
+public:
+    Node* cloneGraph(Node* node) {
+        if(node == nullptr)return nullptr;
+        int n = node->neighbors.size();
+
+        Node* root = new Node(node->val,vector<Node*> {});
+        visited[node->val] = root;
+
+        for(int i = 0 ; i < n ; i ++ ){
+            if(!visited[node->neighbors[i]->val]){
+                root->neighbors.push_back(cloneGraph(node->neighbors[i]));
+            }
+            else root->neighbors.push_back(visited[node->neighbors[i]->val]);
+        }
+        return root;
+    }
+};
+```
+
+
+
+```javascript
+var cloneGraph = function(node) {
+    let map = new Map()
+
+    const clone = function(node) {
+        if(!node) return null
+
+        const root = new Node(node.val)
+        
+        if(map.has(node)) return map.get(node)
+
+        if(!map.has(node)){
+            map.set(node,root)
+        }
+
+        for(let i = 0 ; i < node.neighbors.length ; i ++ ){
+            root.neighbors[i] = clone(node.neighbors[i])
+        }
+
+        return root
+    }
+
+    return clone(node)
+};
+```
+
