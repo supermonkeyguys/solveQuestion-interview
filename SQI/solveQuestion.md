@@ -472,7 +472,7 @@ var cloneGraph = function(node) {
 
         const root = new Node(node.val)
         
-        if(map.has(node)) return map.get(node)
+        if(map.has(node)) return map.get(node) 
 
         if(!map.has(node)){
             map.set(node,root)
