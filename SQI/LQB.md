@@ -253,3 +253,90 @@ int main()
  } 
 ```
 
+# 3/17 25
+
+## [砍柴(动态+博弈)]([12.砍柴 - 蓝桥云课](https://www.lanqiao.cn/problems/19722/learning/?page=22&first_category_id=1&second_category_id=3&difficulty=20&status=1))
+
+```c++
+#include<bits/stdc++.h>
+using namespace std;
+const int N = 1e5 + 10;
+
+vector<int>prime;
+
+bool  isprime(int x){
+	for(int i = 2 ; i * i <= x ; i ++ ){
+		if(x % i == 0)return false;
+	}
+	return true;
+} 
+
+void getPrime(){
+	for(int i = 2 ; i <= N ; i ++ ){
+		if(isprime(i))prime.push_back(i);
+	}
+}
+
+int main()
+{
+	int T;
+	cin >> T;
+	vector<int>dp(N,0);
+	getPrime();
+	
+	for(int i = 1 ; i <= N ; i ++ ){
+		for(int j = 0 ; j < prime.size() && i - prime[j] >= 0 ; j ++ ){
+			//如果减了一个质数后是必输局(说明小蓝选a[j]这个质数留给小桥的是必输的局面，小蓝赢)
+			if(dp[i - prime[j]] == 0){
+				dp[i] = 1;
+				break; 
+			}
+		}
+	}
+	
+	while(T -- ){
+		//小蓝(1) 小乔(0) 
+		int x;
+		cin >> x;
+		cout << dp[x] << endl;
+	}
+	
+	return 0;
+}
+```
+
+## [回文数组(贪心+思维)]([5.回文数组 - 蓝桥云课](https://www.lanqiao.cn/problems/19715/learning/?page=22&first_category_id=1&second_category_id=3&difficulty=20&status=1))
+
+```c++
+#include<bits/stdc++.h>
+using namespace std;
+const int N = 1e6 + 10;
+//记得开longlong
+long long a[N] , b[N] , ans;
+
+int main()
+{
+	int n;
+	cin >> n;
+	for(int i = 1 ; i <= n ; i ++ )cin >> a[i];
+	
+	for(int i = 1 ; i <= n / 2 ; i ++ )b[i] = a[n - i + 1] - a[i]; 
+	
+	for(int i = 1 ; i <= n / 2 ; i ++ ){
+		if(b[i] > 0 && b[i + 1] > 0){
+			if(b[i + 1] > b[i])ans += min(b[i],b[i + 1]) , b[i + 1] -= b[i];
+			else ans += max(b[i],b[i + 1]) , i ++ ;
+		}
+		else if(b[i] < 0 && b[i + 1] < 0){
+			if(b[i + 1] < b[i])ans += abs(max(b[i],b[i + 1])) , b[i + 1] -= b[i];
+			else ans += abs(min(b[i],b[i + 1])), i ++ ;
+		}
+		else ans += abs(b[i]);
+	}
+	
+	cout << ans << endl;
+	
+	return 0;
+}
+```
+
