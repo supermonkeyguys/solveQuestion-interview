@@ -340,3 +340,140 @@ int main()
 }
 ```
 
+## [D. Test of Love]([Problem - D - Codeforces](https://codeforces.com/contest/1992/problem/D))
+
+```c++
+#include<bits/stdc++.h>
+using namespace std;
+
+
+int main()
+{
+	int T;
+	cin >> T;
+	while(T -- ){
+		int n,m,k;
+		cin >> n >> m >> k;
+		string a;
+		cin >> a;
+		string way = 'S' + a;
+		bool flag = true;
+		for(int i = 0 ; i < way.size() ;){
+//			while(way[i + 1] == 'L') ++ i;
+			if(way[i] == 'W'){
+				k -- ;
+				i ++ ;
+				if(k == -1){
+					flag = false;
+					break;
+				}
+				else continue;
+			} 
+			if(way[i] == 'C'){
+				flag = false;
+				break;
+			}
+			
+			if(i + m > n)break;
+			
+			bool isJump = false;
+			int  path = -1;
+			int j;
+			for(j = m ; j >= 1 && i + j <= n ; j -- ){
+				if(way[i + j] == 'L'){
+					isJump = true;
+					break;
+				}
+				if(way[i + j] == 'W'){
+					if(path == -1)path = j;
+					else path = max(path,j);	
+				}
+			}
+			
+			if(isJump)i += j;
+			else if(path != -1)i += path;
+			else {
+				flag = false;
+				break;
+			}
+			
+			if(k == -1){
+				flag = false;
+				break;
+			}
+			
+		}
+		if(flag)cout << "YES" << endl;
+		else cout << "NO" << endl;	
+	}
+	
+	return 0;
+}
+```
+
+# 3/18 25
+
+## [E. Novice's Mistake]([Problem - E - Codeforces](https://codeforces.com/contest/1992/problem/E))
+
+```c++
+#include<bits/stdc++.h>
+using namespace std;
+
+int weishu(int x){
+	int t = 0;
+	while(x){
+		x /= 10;
+		t ++ ;
+	}	
+	return t;
+}
+
+int res[7];
+//获取 用n拼接出来的答案(最大6位)
+void getRes(int n){
+	string N = to_string(n);
+	int lenN = N.length();
+			
+	int j = 0;
+	for(int i = 1 ; i <= 6 ; i ++ ){
+        //n = 12
+        // 1
+        // 12
+        // 121 
+        // 1212
+        // 12121
+        // 121212
+		res[i] = res[i - 1] * 10 + (N[j] - '0');
+		j = (j + 1) % lenN;
+	} 
+}
+
+int main()
+{
+	int T;
+	cin >> T;
+	vector<pair<int,int> >ans;
+	while(T -- ){
+		int n;
+		cin >> n;
+		getRes(n);
+		
+		ans.clear();
+		for(int a = 1 ; a <= 10000 ; a ++ ){
+			for(int i = 1 ; i <= 6 ; i ++ ){
+				int b = a * weishu(n) - i;
+				if(b >= 1 && b <= min(10000,a * n) && b == n * a - res[i]){
+					ans.push_back({a,b});
+				}
+			}
+		}
+		cout << ans.size() << endl;
+		for(auto p : ans){
+			printf("%d %d\n",p.first,p.second);
+		}
+	}
+	
+	return 0;
+}
+```
+
