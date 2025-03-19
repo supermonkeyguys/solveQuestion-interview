@@ -477,3 +477,200 @@ int main()
 }
 ```
 
+# 3/19 25
+
+## [C. Numeric String Template]([Problem - C - Codeforces](https://codeforces.com/contest/2000/problem/C))
+
+```c++
+#include<bits/stdc++.h>
+using namespace std;
+const int N = 2 * 1e5 + 10;
+
+vector<int>a(N);
+
+int main()
+{
+	int T;
+	cin >> T;
+	while(T -- ){
+		int n;
+		cin >> n;
+		string mod;
+		for(int i = 0 ; i < n ; i ++ )cin >> a[i];
+		int m;
+		cin >> m;
+		while(m -- ){
+			
+			cin >> mod;
+			
+			if(mod.size() != n){
+				cout << "NO" << endl;
+				continue;
+			}
+			
+			map<char,int>mp;
+			map<int,char>mp1;
+			bool flag = true;
+			
+			for(int i = 0 ; i < n ; i ++ ){
+				int num = a[i];
+				char s = mod[i];
+				if(mp.count(s) && mp[s] != num){
+					flag = false;
+					break;
+				}
+				if(mp1.count(num) && mp1[num] != s){
+					flag = false;
+					break;
+				}
+				mp[s] = num , mp1[num] = s;
+			}
+			
+			if(flag)cout << "YES" << endl;
+			else cout << "NO" << endl;
+		}
+			
+	}
+	
+	return 0;
+}
+```
+
+![](C:\Users\30292\Desktop\SQI\SQI\lqb_img\Snipaste_2025-03-19_16-20-06.png)
+
+![](C:\Users\30292\Desktop\SQI\SQI\lqb_img\Snipaste_2025-03-19_16-20-45.png)
+
+## [E. Photoshoot for Gorillas]([Problem - E - Codeforces](https://codeforces.com/contest/2000/problem/E))
+
+```c++
+ #include<bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+const int N = 2 * 1e5 + 10;
+
+bool cmp(ll a,ll b){
+	return a > b;
+}
+
+int main()
+{
+	int T;
+	cin >> T;
+	while(T -- ){
+		int n,m,k,w;
+		cin >> n >> m >> k >> w;
+		vector<ll>mk(w);
+		for(int i = 0; i < w ; i ++ ){
+			cin >> mk[i];
+		}
+		
+		vector<vector<ll> >sp(n + 2,vector<ll>(m + 2,0));
+		for(int i = 1 ; i <= n - k + 1 ; i ++ ){
+			for(int j = 1 ; j <= m - k + 1 ; j ++ ){
+				int x = i , y = j , X = min(n,i + k - 1) , Y = min(m,j + k - 1);
+				sp[x][y] ++ ;
+				sp[X + 1][y] -- ;
+				sp[x][Y + 1] -- ;
+				sp[X + 1][Y + 1] ++ ;
+//				cout << sp[i][j] << ' ';
+			}
+//			cout << endl;
+		}
+		vector<ll>maxCnt;
+		for(int i = 1 ; i <= n ; i ++ ){
+			for(int j = 1 ; j <= m ; j ++ ){
+				sp[i][j] += sp[i - 1][j] + sp[i][j - 1] - sp[i - 1][j - 1];
+//				cout << sp[i][j] << ' ';
+				maxCnt.push_back(sp[i][j]);
+			}
+		}
+		sort(maxCnt.begin(),maxCnt.end(),cmp);
+		sort(mk.begin(),mk.end(),cmp);
+		ll ans = 0;
+		for(int i = 0 ; i < min(mk.size(),maxCnt.size()) ; i ++ ){
+//			cout << maxCnt[i] << endl;
+			ans += mk[i] * maxCnt[i];
+		}
+
+		cout << ans << endl;
+
+	}
+	
+	return 0;
+}
+```
+
+## [冶炼金属](https://www.lanqiao.cn/problems/3510/learning/?page=2&first_category_id=1&second_category_id=3&status=1&tags=2023&tag_relation=union)
+
+```c++
+#include<bits/stdc++.h>
+using namespace std;
+const int N = 1e4 + 10;
+
+int get(int a,int b){
+	int l = 0 , r = 1e9;
+	while(l < r){
+		int mid = (l + r) >> 1;
+		if(a / mid > b)l = mid + 1;
+		else r = mid;
+	}
+	return l;
+}
+
+int main()
+{
+	int n;
+	cin >> n;
+	int minV = 0 , maxV = 1e9;
+	int a,b;
+	for(int i = 1 ; i <= n ; i ++ ){
+		cin >> a >> b;
+		minV = max(minV,get(a,b));
+		maxV = min(maxV,get(a,b - 1) - 1);
+	}
+	
+	cout << minV << ' ' << maxV << endl;
+	
+	return 0;
+}
+```
+
+## [训练士兵](https://www.lanqiao.cn/problems/19703/learning/?page=1&first_category_id=1&second_category_id=3&status=1&tag_relation=union&name=%E8%AE%AD%E7%BB%83)
+
+```c++
+#include<bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+const int N = 1e6 + 10;
+
+ll cost[N];
+
+int main()
+{
+	ll n,s;
+	cin >> n >> s;
+	ll sumCost = 0;
+	int maxT = 0;
+	for(int i = 1 ; i <= n ; i ++ ){
+		int p ,c;
+		cin >> p >> c;
+		sumCost += p;
+		cost[c] += p;
+		maxT = max(maxT,c);
+	}	
+	
+	ll ans = 0;
+	for(int i = 1 ; i <= maxT ; i ++ ){
+		if(sumCost > s){
+			ans += s;
+		}
+		else ans += sumCost;
+		sumCost -= cost[i];
+	}
+	
+	cout << ans << endl;
+	
+	return 0;
+}
+```
+
