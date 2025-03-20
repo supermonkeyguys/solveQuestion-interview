@@ -674,3 +674,147 @@ int main()
 }
 ```
 
+# 3/20 25
+
+## [C. Anya and 1100](https://codeforces.com/contest/2036/problem/C)
+
+```c++
+#include<bits/stdc++.h>
+using namespace std;
+
+int len;
+string mod;
+
+bool check(int i){
+	if(i < 0)return false;
+	if(i > len - 3)return false;
+	if(mod[i] == '1' && mod[i + 1] == '1' && mod [i + 2] == '0' && mod[i + 3] == '0')return true;
+	return false; 
+}
+
+int main()
+{
+	int T;
+	cin >> T;
+	while(T -- ){
+		cin >> mod;
+		len = mod.size();
+		int count = 0;
+		for(int i = 0 ; i < len ; i ++ ){
+			if(check(i))count ++ ;	
+		}
+		int q;
+		cin >> q;
+		while(q -- ){
+			int i,v;
+			cin >> i >> v;
+			i -- ;
+			if(mod[i] != '0' + v){
+				bool prev = check(i - 3) || check(i - 2) || check(i - 1) || check(i);
+				mod[i] = '0' + v;
+				bool next = check(i - 3) || check(i - 2) || check(i - 1) || check(i);
+				count += next - prev;
+			}
+			if(count)cout << "YES" << endl;
+			else cout << "NO" << endl;
+		}
+		
+	}
+	
+	return 0;
+}
+```
+
+## [E. Reverse the Rivers](https://codeforces.com/contest/2036/problem/E)
+
+```c++
+#include<bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+
+int main()
+{
+	int n,k,q;
+	cin >> n >> k >> q;
+	vector<vector<int> >a(k,vector<int>(n,0));
+	
+	for(int i = 0 ; i < n ; i ++ ){
+		for(int j = 0 ; j < k ; j ++ ){
+			cin >> a[j][i];
+            //经过 或运算 后 单组数组内的数据将会是单调递增的（或运算性质）
+			if(i >= 1)a[j][i] |= a[j][i - 1];
+		}
+	}
+	
+	while(q -- ){
+		int m;
+		cin >> m;
+		int sta = 0 , end = 2e9 + 10;
+        //寻找答案区间
+        //答案要求编号最小（答案为sta）
+		while(m -- ){
+			int p1,p2;
+			char op;
+			cin >> p1 >> op >> p2;
+			p1 -- ;
+            //约束答案区间末尾
+			if(op == '>'){
+				int differ = upper_bound(a[p1].begin(),a[p1].end(),p2) - a[p1].begin();
+				sta = max(differ,sta);
+			}
+            //约束答案区间起点
+			else {
+				int differ = lower_bound(a[p1].begin(),a[p1].end(),p2) - a[p1].begin();
+				end = min(differ - 1,end);
+			}
+		}
+        //数组起始点为0 +1
+		if(sta <= end && sta < n)cout << sta + 1 << endl;
+		else cout << -1 << endl;
+	}
+	
+	
+	return 0;
+}
+```
+
+## 爆气球
+
+![](C:\Users\30292\Desktop\SQI\SQI\lqb_img\Snipaste_2025-03-20_20-13-46.png)
+
+```c++
+#include<bits/stdc++.h>
+using namespace std;
+const int N = 1e5 + 10;
+
+int a[N];
+
+int main()
+{
+	int n,h;
+	cin >> n >> h;
+	vector<int>p(n);
+	for(int i = 0 ; i < n ; i ++ )cin >> p[i];
+	
+	int ans = 0;
+	int pos = 0;
+	for(int i = 0 ; i < n ; i ++ ){
+		int limit = p[i] + h;
+		int temp = 0;
+		int sta = i;
+		while(sta < n && p[sta] <= limit){
+			if(p[sta] <= limit)temp ++ ;
+			sta ++ ;
+		}
+		if(temp > ans){
+			ans = temp;
+			pos = sta;
+		}
+	}
+	
+	cout << p[pos - 1] - h << ' ' << ans << endl;
+	
+	return 0;
+}
+```
+
