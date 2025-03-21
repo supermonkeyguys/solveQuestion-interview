@@ -818,3 +818,240 @@ int main()
 }
 ```
 
+# 3/21 25
+
+## [路径之谜(DFS+剪枝)](https://www.lanqiao.cn/problems/89/learning/?page=1&first_category_id=1&second_category_id=3&tag_relation=union&tags=DFS,BFS,%E5%89%AA%E6%9E%9D,%E6%90%9C%E7%B4%A2,%E8%AE%B0%E5%BF%86%E5%8C%96%E6%90%9C%E7%B4%A2,%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92,%E9%80%92%E6%8E%A8,01%E8%83%8C%E5%8C%85,%E5%8C%BA%E9%97%B4DP,%E6%A0%91%E5%BD%A2DP,%E7%8A%B6%E5%8E%8BDP,%E8%83%8C%E5%8C%85%E9%97%AE%E9%A2%98,%E6%A0%91,%E5%AD%97%E7%AC%A6%E4%B8%B2,%E8%B4%AA%E5%BF%83,%E4%BA%8C%E5%88%86,%E5%8F%8C%E6%8C%87%E9%92%88,%E6%9A%B4%E5%8A%9B,%E6%9E%84%E9%80%A0,%E8%A7%84%E5%BE%8B,%E6%80%9D%E7%BB%B4)
+
+```c++
+#include<bits/stdc++.h>
+using namespace std;
+const int N = 30;
+
+int dx[4] = {1,0,-1,0};
+int dy[4] = {0,-1,0,1};
+
+int p1[N];
+int p2[N];
+
+int k[N];
+int j[N];
+
+int n;
+int q[N * N];
+bool isPass[N][N];
+bool isFind = false;
+
+void dfs(int x,int y,int index){
+	
+	if(x == n - 1 && y == n - 1){
+		for(int i = 0 ; i < n ; i ++ ){
+			if(p1[i] != k[i])return;
+			if(p2[i] != j[i])return;
+//			cout << p1[i] << ' ' << k[i] << endl;
+		}
+//		cout << index << endl;
+//		for(int i = 0 ; i < n ; i ++ )cout << k[i] << ' ' << p1[i] << endl;
+		
+		for(int i = 0 ; i < index ; i ++ )cout << q[i] << ' ';
+		isFind = true;
+		return;
+	}	
+	
+	for(int i = 0 ; i < 4 ; i ++ ){
+		int x1 = dx[i] + x;
+		int y1 = dy[i] + y;
+		if(x1 < 0 || y1 < 0 || x1 >= n || y1 >= n || isPass[x1][y1])continue;
+//		cout << x1 << ' ' << y1 << endl;
+		if(j[x1] + 1 > p2[x1] || k[y1] + 1 > p1[y1])continue;
+		j[x1] ++ , k[y1] ++ ;
+		q[index] = x1 * n  + y1;
+		isPass[x1][y1] = true;
+		dfs(x1,y1,index + 1);
+		if(isFind)return;
+		isPass[x1][y1] = false;
+		q[index] = 0;
+		j[x1] -- , k[y1] -- ;
+	}
+}
+
+int main()
+{
+	cin >> n;
+	for(int i = 0 ; i < n ; i ++ )cin >> p1[i];
+	for(int i = 0 ; i < n ; i ++ )cin >> p2[i];
+	k[0] ++ ;
+	j[0] ++ ;
+	isPass[0][0] = true;
+	dfs(0,0,1);
+	
+	return 0;
+}
+```
+
+## [火车运输(DP)](https://www.lanqiao.cn/problems/17117/learning/?page=14&first_category_id=1&second_category_id=3&tag_relation=union&tags=DFS,BFS,%E5%89%AA%E6%9E%9D,%E6%90%9C%E7%B4%A2,%E8%AE%B0%E5%BF%86%E5%8C%96%E6%90%9C%E7%B4%A2,%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92,%E9%80%92%E6%8E%A8,01%E8%83%8C%E5%8C%85,%E5%8C%BA%E9%97%B4DP,%E6%A0%91%E5%BD%A2DP,%E7%8A%B6%E5%8E%8BDP,%E8%83%8C%E5%8C%85%E9%97%AE%E9%A2%98,%E6%A0%91,%E5%AD%97%E7%AC%A6%E4%B8%B2,%E8%B4%AA%E5%BF%83,%E4%BA%8C%E5%88%86,%E5%8F%8C%E6%8C%87%E9%92%88,%E6%9A%B4%E5%8A%9B,%E6%9E%84%E9%80%A0,%E8%A7%84%E5%BE%8B,%E6%80%9D%E7%BB%B4)
+
+```c++
+#include<bits/stdc++.h>
+using namespace std;
+
+int main()
+{
+	int n,a,b;
+	cin >> n >> a >> b;
+	vector<int>w(n);
+	int sum = 0;
+	for(int i = 0 ; i < n ; i ++ )cin >> w[i] , sum += w[i];
+	
+	vector<vector<int> >dp(1010,vector<int>(1010,0));
+
+	for(int i = 0 ; i < n ; i ++ ){
+		for(int j = a ; j >= 0 ; j -- ){
+			for(int k = b ; k >= 0 ; k -- ){
+				if(j >= w[i])dp[j][k] = max(dp[j][k],dp[j - w[i]][k] + w[i]);
+				if(k >= w[i])dp[j][k] = max(dp[j][k],dp[j][k - w[i]] + w[i]);
+			}
+		}
+	}
+
+	cout << dp[a][b] << endl;
+	
+	return 0;
+}
+```
+
+## [日期问题(暴力+枚举)](https://www.lanqiao.cn/problems/103/learning/?page=1&first_category_id=1&second_category_id=3&tag_relation=union&tags=DFS,BFS,%E5%89%AA%E6%9E%9D,%E6%90%9C%E7%B4%A2,%E8%AE%B0%E5%BF%86%E5%8C%96%E6%90%9C%E7%B4%A2,%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92,%E9%80%92%E6%8E%A8,01%E8%83%8C%E5%8C%85,%E5%8C%BA%E9%97%B4DP,%E6%A0%91%E5%BD%A2DP,%E7%8A%B6%E5%8E%8BDP,%E8%83%8C%E5%8C%85%E9%97%AE%E9%A2%98,%E6%A0%91,%E5%AD%97%E7%AC%A6%E4%B8%B2,%E8%B4%AA%E5%BF%83,%E4%BA%8C%E5%88%86,%E5%8F%8C%E6%8C%87%E9%92%88,%E6%9A%B4%E5%8A%9B,%E6%9E%84%E9%80%A0,%E8%A7%84%E5%BE%8B,%E6%80%9D%E7%BB%B4)
+
+```c++
+#include<bits/stdc++.h>
+using namespace std;
+
+int mon[13] = {0,31,28,31,30,31,30,31,31,30,31,30,31};
+
+bool ru(int x){
+	if(x % 4 == 0 && x % 100 != 0)return true;
+	if(x % 400 == 0)return true;
+	return false;
+}
+
+int main()
+{
+	int a,b,c;
+	scanf("%02d/%02d/%02d",&a,&b,&c);
+	
+	for(int i = 1960 ; i <= 2059 ; i ++ ){
+		for(int j = 1 ; j <= 12 ; j ++ ){
+			int date = mon[j];
+			if(j == 2 && ru(i))date ++ ;
+			for(int k = 1 ; k <= date ; k++ ){
+				if(i % 100 == a && b == j && c == k)printf("%d-%02d-%02d\n",i,b,c);
+				else if(i % 100 == c && b == j && a == k)printf("%d-%02d-%02d\n",i,b,a);
+				else if(i % 100 == c && a == j && b == k)printf("%d-%02d-%02d\n",i,a,b);
+			}
+		}
+	}
+	
+	return 0;
+}
+```
+
+## [好数(暴力+枚举)](https://www.lanqiao.cn/problems/19709/learning/?page=16&first_category_id=1&second_category_id=3&tag_relation=union&tags=DFS,BFS,%E5%89%AA%E6%9E%9D,%E6%90%9C%E7%B4%A2,%E8%AE%B0%E5%BF%86%E5%8C%96%E6%90%9C%E7%B4%A2,%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92,%E9%80%92%E6%8E%A8,01%E8%83%8C%E5%8C%85,%E5%8C%BA%E9%97%B4DP,%E6%A0%91%E5%BD%A2DP,%E7%8A%B6%E5%8E%8BDP,%E8%83%8C%E5%8C%85%E9%97%AE%E9%A2%98,%E6%A0%91,%E5%AD%97%E7%AC%A6%E4%B8%B2,%E8%B4%AA%E5%BF%83,%E4%BA%8C%E5%88%86,%E5%8F%8C%E6%8C%87%E9%92%88,%E6%9A%B4%E5%8A%9B,%E6%9E%84%E9%80%A0,%E8%A7%84%E5%BE%8B,%E6%80%9D%E7%BB%B4)
+
+```c++
+#include<bits/stdc++.h>
+using namespace std;
+
+int main()
+{
+	int n;
+	cin >> n;
+	int ans = 0;
+	for(int i = n ; i >= 1 ; i -- ){
+		for(int j = i ; j > 0 ;){
+			if(j % 2 != 0)j /= 10;
+			else break;
+			if(j % 2 == 0)j /= 10;
+			else break;
+			if(j == 0)ans ++ ;
+		}
+	}
+	
+	cout << ans << endl;
+	
+	return 0;
+}
+```
+
+## [商品库存管理](https://www.lanqiao.cn/problems/19716/learning/?page=35&first_category_id=1&second_category_id=3&tag_relation=union&tags=DFS,BFS,%E5%89%AA%E6%9E%9D,%E6%90%9C%E7%B4%A2,%E8%AE%B0%E5%BF%86%E5%8C%96%E6%90%9C%E7%B4%A2,%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92,%E9%80%92%E6%8E%A8,01%E8%83%8C%E5%8C%85,%E5%8C%BA%E9%97%B4DP,%E6%A0%91%E5%BD%A2DP,%E7%8A%B6%E5%8E%8BDP,%E8%83%8C%E5%8C%85%E9%97%AE%E9%A2%98,%E6%A0%91,%E5%AD%97%E7%AC%A6%E4%B8%B2,%E8%B4%AA%E5%BF%83,%E4%BA%8C%E5%88%86,%E5%8F%8C%E6%8C%87%E9%92%88,%E6%9A%B4%E5%8A%9B,%E6%9E%84%E9%80%A0,%E8%A7%84%E5%BE%8B,%E6%80%9D%E7%BB%B4,%E5%9B%BE%E8%AE%BA,%E5%89%8D%E7%BC%80%E5%92%8C,%E5%B7%AE%E5%88%86,%E6%9E%9A%E4%B8%BE,%E6%A8%A1%E6%8B%9F,%E9%80%92%E5%BD%92,2020,2021,2022,2023,2024,2019,%E5%9B%BD%E8%B5%9B)
+
+**暴力O(n * m)**
+
+```c++
+#include<bits/stdc++.h>
+using namespace std;
+const int N = 3 * 1e5 + 10;
+
+int l[N] , r[N];
+int pp[N];
+
+int main()
+{
+	int n,m;
+	cin >> n >> m;
+	for(int i = 1 ; i <=  m ; i ++ ){
+		cin >> l[i] >> r[i];
+		pp[l[i]] ++ ;
+		pp[r[i] + 1] -- ;
+	}
+	int ans = 0;
+	for(int i = 1 ; i <= n ; i ++ ){
+		pp[i] += pp[i - 1];
+		if(!pp[i])ans ++ ;
+	}
+
+	for(int i = 1 ; i <= m ; i ++ ){
+		int res = ans;
+		for(int j = l[i] ; j <= r[i] ; j ++ ){
+			if(pp[j] == 1)res ++ ;
+		}
+		cout << res << endl;
+	}
+	
+	return 0;
+}
+```
+
+**O(n + m)**
+
+```c++
+#include<bits/stdc++.h>
+using namespace std;
+const int N = 3 * 1e5 + 10;
+
+int l[N] , r[N];
+int pp[N];
+int cnt[N];
+
+int main()
+{
+	int n,m;
+	cin >> n >> m;
+	for(int i = 1 ; i <=  m ; i ++ ){
+		cin >> l[i] >> r[i];
+		pp[l[i]] ++ ;
+		pp[r[i] + 1] -- ;
+	}
+	int ans = 0;
+	for(int i = 1 ; i <= n ; i ++ ){
+		pp[i] += pp[i - 1];
+		if(!pp[i])ans ++ ;
+		cnt[i] += cnt[i - 1] + (pp[i] <= 1);
+	}
+
+	for(int i = 1 ; i <= m ; i ++ ){
+		cout << cnt[r[i]] - cnt[l[i] - 1] + ans << endl;
+	}
+	
+	return 0;
+}
+```
+
