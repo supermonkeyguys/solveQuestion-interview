@@ -1055,3 +1055,313 @@ int main()
 }
 ```
 
+## [回文字符串(思维)](https://www.lanqiao.cn/problems/19718/learning/?page=35&first_category_id=1&second_category_id=3&tag_relation=union&tags=DFS,BFS,%E5%89%AA%E6%9E%9D,%E6%90%9C%E7%B4%A2,%E8%AE%B0%E5%BF%86%E5%8C%96%E6%90%9C%E7%B4%A2,%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92,%E9%80%92%E6%8E%A8,01%E8%83%8C%E5%8C%85,%E5%8C%BA%E9%97%B4DP,%E6%A0%91%E5%BD%A2DP,%E7%8A%B6%E5%8E%8BDP,%E8%83%8C%E5%8C%85%E9%97%AE%E9%A2%98,%E6%A0%91,%E5%AD%97%E7%AC%A6%E4%B8%B2,%E8%B4%AA%E5%BF%83,%E4%BA%8C%E5%88%86,%E5%8F%8C%E6%8C%87%E9%92%88,%E6%9A%B4%E5%8A%9B,%E6%9E%84%E9%80%A0,%E8%A7%84%E5%BE%8B,%E6%80%9D%E7%BB%B4,%E5%9B%BE%E8%AE%BA,%E5%89%8D%E7%BC%80%E5%92%8C,%E5%B7%AE%E5%88%86,%E6%9E%9A%E4%B8%BE,%E6%A8%A1%E6%8B%9F,%E9%80%92%E5%BD%92,2020,2021,2022,2023,2024,2019,%E5%9B%BD%E8%B5%9B)
+
+```c++
+#include<bits/stdc++.h>
+using namespace std;
+//找到第一个和最后一个不是(l,q,b)的字母下标
+bool solve(){
+	vector<int>pp;
+	string s;
+	cin >> s;
+	for(int i = 0 ; i < s.size() ; i ++ ){
+		if(s[i] != 'l' && s[i] != 'q' && s[i] != 'b')pp.push_back(i);
+	}
+	
+	if(!pp.size())return true;
+	int l = pp[0] , r = pp[pp.size() - 1];
+	while(l <= r && s[l] == s[r])l ++ , r -- ;
+	int L = pp[0] , R = pp[pp.size() - 1];
+	while(L >= 0 && R < s.length() && s[L] == s[R])L -- , R ++ ;
+	 
+	return L < 0 && l > r;
+}
+
+int main()
+{
+	int n;
+	cin >> n;
+	while(n -- ){
+		if(solve())cout << "Yes" << endl;
+		else cout << "No" << endl;
+	}
+	
+	return 0;
+}
+```
+
+## [翻转(线性DP)](https://www.lanqiao.cn/problems/18427/learning/?page=34&first_category_id=1&second_category_id=3&tag_relation=union&tags=DFS,BFS,%E5%89%AA%E6%9E%9D,%E6%90%9C%E7%B4%A2,%E8%AE%B0%E5%BF%86%E5%8C%96%E6%90%9C%E7%B4%A2,%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92,%E9%80%92%E6%8E%A8,01%E8%83%8C%E5%8C%85,%E5%8C%BA%E9%97%B4DP,%E6%A0%91%E5%BD%A2DP,%E7%8A%B6%E5%8E%8BDP,%E8%83%8C%E5%8C%85%E9%97%AE%E9%A2%98,%E6%A0%91,%E5%AD%97%E7%AC%A6%E4%B8%B2,%E8%B4%AA%E5%BF%83,%E4%BA%8C%E5%88%86,%E5%8F%8C%E6%8C%87%E9%92%88,%E6%9A%B4%E5%8A%9B,%E6%9E%84%E9%80%A0,%E8%A7%84%E5%BE%8B,%E6%80%9D%E7%BB%B4,%E5%9B%BE%E8%AE%BA,%E5%89%8D%E7%BC%80%E5%92%8C,%E5%B7%AE%E5%88%86,%E6%9E%9A%E4%B8%BE,%E6%A8%A1%E6%8B%9F,%E9%80%92%E5%BD%92,2020,2021,2022,2023,2024,2019,%E5%9B%BD%E8%B5%9B)
+
+```c++
+#include<bits/stdc++.h>
+using namespace std;
+const int N = 1e5 + 10;
+
+//0±íÊ¾²»·­×ª,1±íÊ¾·­×ª 
+int dp[N][2];
+
+int main()
+{
+	int n;
+	cin >> n;
+	string prev;
+	for(int i = 1 ; i <= n ; i ++ ){
+		string now;
+		cin >> now;
+    	// cout << now << endl;
+		if(i > 1){
+			bool t1 = now[0] == prev[1];
+      bool t2 = now[0] == prev[0];
+      bool t3 = now[1] == prev[1];
+      bool t4 = now[1] == prev[0];
+
+			dp[i][0] = min(dp[i - 1][0] + 2 - t1 , dp[i - 1][1] + 2 - t2);
+			dp[i][1] = min(dp[i - 1][0] + 2 - t3 , dp[i - 1][1] + 2 - t4);
+		}
+		else {
+			dp[1][0] = 2;
+			dp[1][1] = 2;
+		}
+		// cout << prev << endl;
+		prev = now;
+	}
+	
+	cout << min(dp[n][0],dp[n][1]) << endl;
+	
+	return 0;
+}
+```
+
+## [最大阶梯(DP)](https://www.lanqiao.cn/problems/17147/learning/?page=34&first_category_id=1&second_category_id=3&tag_relation=union&tags=DFS,BFS,%E5%89%AA%E6%9E%9D,%E6%90%9C%E7%B4%A2,%E8%AE%B0%E5%BF%86%E5%8C%96%E6%90%9C%E7%B4%A2,%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92,%E9%80%92%E6%8E%A8,01%E8%83%8C%E5%8C%85,%E5%8C%BA%E9%97%B4DP,%E6%A0%91%E5%BD%A2DP,%E7%8A%B6%E5%8E%8BDP,%E8%83%8C%E5%8C%85%E9%97%AE%E9%A2%98,%E6%A0%91,%E5%AD%97%E7%AC%A6%E4%B8%B2,%E8%B4%AA%E5%BF%83,%E4%BA%8C%E5%88%86,%E5%8F%8C%E6%8C%87%E9%92%88,%E6%9A%B4%E5%8A%9B,%E6%9E%84%E9%80%A0,%E8%A7%84%E5%BE%8B,%E6%80%9D%E7%BB%B4,%E5%9B%BE%E8%AE%BA,%E5%89%8D%E7%BC%80%E5%92%8C,%E5%B7%AE%E5%88%86,%E6%9E%9A%E4%B8%BE,%E6%A8%A1%E6%8B%9F,%E9%80%92%E5%BD%92,2020,2021,2022,2023,2024,2019,%E5%9B%BD%E8%B5%9B)
+
+**每个更大的阶梯可以看成 两个小阶梯重叠一角形成 + 当前块组成**
+
+**把大拆小**
+
+***DP思想：1.分解问题 2.求解子问 3.状态定义与状态转移方程 4.自底向上(迭代) 或 自顶向下求解(递归+记忆化--记录子问题)***
+
+```c++
+#include<bits/stdc++.h>
+using namespace std;
+const int N = 1010;
+
+int mp[N][N];
+int dp[N][N];
+
+int n;
+
+void initDp(){
+	for(int i = 1 ; i <= n ; i ++ ){
+		for(int j = 1; j <= n ; j ++ ){
+			dp[i][j] = 1;
+		}
+	}
+}
+
+
+int main()
+{
+	cin >> n;
+	for(int i = 1 ; i <= n ; i ++ )
+		for(int j = 1 ; j <= n ; j ++ )
+			cin >> mp[i][j];
+	
+	int ans = 0;
+	
+	initDp();
+	for(int i = 1 ; i <= n ; i ++ ){
+		for(int j = 1 ; j <= n ; j ++ ){
+			if(mp[i][j] == mp[i][j - 1] && mp[i][j] == mp[i - 1][j])
+			dp[i][j] = min(dp[i][j - 1],dp[i - 1][j]) + 1;
+			ans = max(dp[i][j],ans);
+		}
+	}
+	
+	initDp();
+	for(int i = 1 ; i <= n ; i ++ ){
+		for(int j = n ; j >= 1 ; j -- ){
+			if(mp[i][j] == mp[i][j + 1] && mp[i][j] == mp[i - 1][j]){
+				dp[i][j] = min(dp[i][j + 1],dp[i - 1][j]) + 1;
+				ans = max(dp[i][j],ans);
+			} 
+		}
+	}
+	
+	initDp();
+	for(int i = n ; i >= 1 ; i -- ){
+		for(int j = 1 ; j <= n ; j ++ ){
+			if(mp[i][j] == mp[i + 1][j] && mp[i][j] == mp[i][j - 1]){
+				dp[i][j] = min(dp[i + 1][j],dp[i][j - 1]) + 1;
+				ans = max(dp[i][j],ans);
+			}
+		}
+	}
+	
+	initDp();
+	for(int i = n ; i >= 1 ; i -- ){
+		for(int j = n ; j >= 1 ; j -- ){
+			if(mp[i][j] == mp[i + 1][j] && mp[i][j] == mp[i][j + 1]){
+				dp[i][j] = min(dp[i + 1][j],dp[i][j + 1]) + 1;
+				ans = max(dp[i][j],ans);
+			}
+		}
+	}
+	
+	cout << ans << endl;
+	
+	return 0;
+ } 
+```
+
+# 3/22 25
+
+## [弹珠堆放(数学-等差公式 + 前缀和)](https://www.lanqiao.cn/problems/17142/learning/?page=34&first_category_id=1&second_category_id=3&tag_relation=union&tags=DFS,BFS,%E5%89%AA%E6%9E%9D,%E6%90%9C%E7%B4%A2,%E8%AE%B0%E5%BF%86%E5%8C%96%E6%90%9C%E7%B4%A2,%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92,%E9%80%92%E6%8E%A8,01%E8%83%8C%E5%8C%85,%E5%8C%BA%E9%97%B4DP,%E6%A0%91%E5%BD%A2DP,%E7%8A%B6%E5%8E%8BDP,%E8%83%8C%E5%8C%85%E9%97%AE%E9%A2%98,%E6%A0%91,%E5%AD%97%E7%AC%A6%E4%B8%B2,%E8%B4%AA%E5%BF%83,%E4%BA%8C%E5%88%86,%E5%8F%8C%E6%8C%87%E9%92%88,%E6%9A%B4%E5%8A%9B,%E6%9E%84%E9%80%A0,%E8%A7%84%E5%BE%8B,%E6%80%9D%E7%BB%B4,%E5%9B%BE%E8%AE%BA,%E5%89%8D%E7%BC%80%E5%92%8C,%E5%B7%AE%E5%88%86,%E6%9E%9A%E4%B8%BE,%E6%A8%A1%E6%8B%9F,%E9%80%92%E5%BD%92,2020,2021,2022,2023,2024,2019,%E5%9B%BD%E8%B5%9B)
+
+```c++
+#include<bits/stdc++.h>
+using namespace std;
+const int N = 1e6 + 10;
+
+int a[N];
+
+
+int main()
+{
+	int n = 20230610;
+	
+	
+	a[1] = 1;
+	a[2] = 4;
+	a[3] = 10;
+	a[4] = 20;
+	
+	for(int i = 5 ; i <= N ; i ++ ){
+		a[i] = (a[i - 1] - a[i - 2]) + i + a[i - 1];
+//		cout << a[i] << endl;
+		if(n == a[i]){
+			cout << i << endl;
+			break;
+		}
+		if(n < a[i] && n >= a[i - 1]){
+			cout << i - 1 << endl;
+			break;
+ 		}
+	}
+	
+	return 0;
+}
+```
+
+## [划分(DP+背包问题)](https://www.lanqiao.cn/problems/17143/learning/?page=34&first_category_id=1&second_category_id=3&tag_relation=union&tags=DFS,BFS,%E5%89%AA%E6%9E%9D,%E6%90%9C%E7%B4%A2,%E8%AE%B0%E5%BF%86%E5%8C%96%E6%90%9C%E7%B4%A2,%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92,%E9%80%92%E6%8E%A8,01%E8%83%8C%E5%8C%85,%E5%8C%BA%E9%97%B4DP,%E6%A0%91%E5%BD%A2DP,%E7%8A%B6%E5%8E%8BDP,%E8%83%8C%E5%8C%85%E9%97%AE%E9%A2%98,%E6%A0%91,%E5%AD%97%E7%AC%A6%E4%B8%B2,%E8%B4%AA%E5%BF%83,%E4%BA%8C%E5%88%86,%E5%8F%8C%E6%8C%87%E9%92%88,%E6%9A%B4%E5%8A%9B,%E6%9E%84%E9%80%A0,%E8%A7%84%E5%BE%8B,%E6%80%9D%E7%BB%B4,%E5%9B%BE%E8%AE%BA,%E5%89%8D%E7%BC%80%E5%92%8C,%E5%B7%AE%E5%88%86,%E6%9E%9A%E4%B8%BE,%E6%A8%A1%E6%8B%9F,%E9%80%92%E5%BD%92,2020,2021,2022,2023,2024,2019,%E5%9B%BD%E8%B5%9B)
+
+```c++
+#include<bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+const int N = 5e5 + 9;
+
+ll dp[N >> 1];
+
+int main()
+{
+	ll a[41] = {0,5160,9191,6410,4657,7492,1531,8854,1253,4520,9231,
+	1266 ,4801 ,3484 ,4323 ,5070 ,1789 ,2744 ,5959 ,9426 ,4433,
+	4404 ,5291 ,2470 ,8533 ,7608 ,2935 ,8922 ,5273 ,8364 ,8819,
+	7374 ,8077 ,5336 ,8495 ,5602 ,6553 ,3548 ,5267 ,9150 ,3309};
+	
+	ll sum = 0;
+	for(int i = 1 ; i <= 40 ; i ++ )sum += a[i];
+	
+	for(int i = 1 ; i <= 40 ; i ++ ){
+		for(int j = sum / 2 ; j >= a[i] ; j -- ){
+			dp[j] = max(dp[j],dp[j - a[i]] + a[i]);
+		}
+	}
+	
+	cout << dp[sum / 2] *  (sum - dp[sum / 2]) << endl;
+	
+	return 0;
+}
+
+```
+
+# 3/23 25
+
+## [货物摆放](https://www.lanqiao.cn/problems/1463/learning/)
+
+```c++
+#include<bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+
+int main()
+{
+	ll p = 2021041820210418;
+	ll ans = 0;
+	
+	vector<ll>mp;
+	for(ll i = 1 ; i * i <= p ; i ++ ){
+		if(p % i == 0){
+      mp.push_back(i);
+      if(i * i != p){
+        mp.push_back(p / i);
+      }
+    }
+	} 
+	
+	for(auto p1 : mp){
+		for(auto p2 : mp){
+			for(auto p3 : mp){
+				if(p1 * p2 * p3 == p)ans ++ ;
+			}
+		}
+	}
+	
+	cout << ans << endl;
+	
+	return 0;
+}
+```
+
+## [砝码称重](https://www.lanqiao.cn/problems/1447/learning/)
+
+```c++
+#include<bits/stdc++.h>
+using namespace std;
+const int N = 1e5 + 10;
+
+int w[110];
+int dp[110][N];
+
+int main()
+{
+	int n;
+	cin >> n;
+	int maxV = 0;
+	for(int i = 1 ; i <= n ; i ++ )cin >> w[i] , maxV += w[i];
+	
+	for(int i = 1 ; i <= n ; i ++ ){
+		for(int j = maxV ; j >= 1 ; j -- ){
+			dp[i][j] = dp[i - 1][j];
+			if(dp[i][j] == 0){
+				if(w[i] == j)dp[i][j] = 1;
+				//假设先前有个重量 w = a[i] + j;
+				//那么j重量就可以拿 j = w - a[i] 表示 
+				if(dp[i - 1][j + w[i]])dp[i][j] = 1;
+				//假设先前有个重量 w = abs(j - a[i])
+				//那么j重量就可以拿 j = w + a[i] 表示 
+				if(dp[i - 1][abs(j - w[i])])dp[i][j] = 1;
+			} 
+		}
+	}
+	
+	int ans = 0;
+	for(int j = 1 ; j <= maxV ; j ++ )if(dp[n][j])ans ++ ;
+	
+	cout << ans << endl;
+	
+	return 0;
+}
+```
+
