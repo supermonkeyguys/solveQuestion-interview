@@ -1365,3 +1365,39 @@ int main()
 }
 ```
 
+# 3/24 25
+
+## [积木画(DP)](https://www.lanqiao.cn/problems/2110/learning/)
+
+```c++
+#include<bits/stdc++.h>
+#define endl '\n'
+using namespace std;
+typedef long long ll;
+const int N = 1e7 + 10 , mod = 1e9 + 7;
+
+ll dp[N][3];
+
+signed main()
+{
+	ios::sync_with_stdio(0);
+	cin.tie(0);
+	cout.tie(0);
+  dp[0][2] = 1;
+	dp[1][2] = 1;
+
+	ll n;
+	cin >> n;
+	
+	for(int i = 2 ; i <= n ; i ++ ){
+		dp[i][0] = (dp[i - 1][1] + dp[i - 2][2]) % mod;
+		dp[i][1] = (dp[i - 1][0] + dp[i - 2][2]) % mod;
+		dp[i][2] = (dp[i - 1][0] + dp[i - 1][1] + dp[i - 1][2] + dp[i - 2][2]) % mod; 
+	} 
+	
+	cout << dp[n][2] << endl;
+	
+	return 0;
+}
+```
+
