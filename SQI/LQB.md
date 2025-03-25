@@ -1401,3 +1401,59 @@ signed main()
 }
 ```
 
+# 3/25 25
+
+## [统计子矩阵](https://www.lanqiao.cn/problems/2109/learning/)
+
+```c++
+#include<iostream>
+#define endl '\n'
+#define int long long
+using namespace std;
+const int N = 550;
+
+int a[N][N];
+
+signed main()
+{
+	ios::sync_with_stdio(0);
+	cin.tie(0);
+	cout.tie(0);
+	int n,m,k;
+	cin >> n >> m >> k;
+	
+	for(int i = 1 ; i <= n ; i ++ ){
+		for(int j = 1 ; j <= m ; j ++ ){
+			cin >> a[i][j];
+		}
+	}
+	
+	for(int i = 1 ; i <= n ; i ++ ){
+		for(int j = 1 ; j <= m ; j ++ ){
+			a[i][j] += a[i - 1][j] + a[i][j - 1] - a[i - 1][j - 1];
+//			cout << a[i][j] << ' ';
+		}
+//		cout << endl;
+	}
+	
+	int ans = 0;
+	for(int i = 1 ; i <= n ; i ++ ){
+		for(int j = i ; j <= n ; j ++ ){
+        	for(int l = 1 , r = 1 ; r <= m ; r ++ ){
+          		while(l <= r){
+            		int s = a[j][r] - a[i - 1][r] - a[j][l - 1] + a[i - 1][l - 1];
+            		if(s <= k)break;
+            		l ++ ;
+          		}
+          		ans += r - l + 1;
+        	}
+		}
+	}
+	
+	
+	cout << ans << endl;
+	
+	return 0;
+}
+```
+
