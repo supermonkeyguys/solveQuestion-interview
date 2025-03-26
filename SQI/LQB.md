@@ -1457,3 +1457,198 @@ signed main()
 }
 ```
 
+# 3/26 25
+
+## [班级活动](https://www.lanqiao.cn/problems/17153/learning/)
+
+```c++
+#include<bits/stdc++.h>
+#define int long long
+#define endl '\n'
+using namespace std;
+const int N = 1e5 + 10;
+
+int a[N];
+
+signed main()
+{ 
+	ios::sync_with_stdio(0);
+	cin.tie(0);
+	cout.tie(0);
+	
+	int n;
+	cin >> n;
+	
+	for(int i = 1 ; i <= n ; i ++ ){
+		int x;
+		cin >> x;
+		a[x] ++ ;
+	}
+	
+	int one = 0;
+	int two = 0;
+	for(int i = 1 ; i <= n ; i ++ ){
+		if(a[i] == 1)one ++ ;
+		if(a[i] > 2)two += a[i] - 2;
+	}
+	
+	int ans = 0;
+	if(two > one){
+    ans = two;
+  }
+  else  {
+    ans = (one - two) / 2 + two;
+  }
+	
+	cout << ans << endl;
+	
+	return 0;
+}
+```
+
+## [管道](https://www.lanqiao.cn/problems/17153/learning/)
+
+```c++
+#include<bits/stdc++.h>
+#define endl '\n'
+using namespace std;
+typedef long long ll;
+
+struct pp{
+	ll L;
+	ll S;
+};
+
+int main()
+{
+//	ios::sync_with_stdio(0);
+//	cin.tie(0);
+//	cout.tie(0);
+	
+	ll n,len;
+	cin >> n >> len;
+	
+	vector<pp>a(n + 1);
+	for(int i = 1 ; i <= n ; i ++ )cin >> a[i].L >> a[i].S;
+	
+//	cout << n << endl;
+	ll l = 0 , r = 2e9;
+	while(l < r){
+		ll mid = (l + r) >> 1;
+//		cout << mid << endl;
+		vector<pair<ll,ll>>q;
+		for(int i = 1 ; i <= n ; i ++ ){
+			ll L = a[i].L , S = a[i].S;
+			if(a[i].S <= mid){
+				ll T = mid - S;
+				ll sta = max(1LL,L - T);
+				ll end = min(len,L + T);
+				q.push_back({sta,end});
+			}
+		}
+		sort(q.begin(),q.end());
+		ll sta = -1 , end = -1;
+		for(int i = 0 ; i < q.size() ; i ++ ){
+			if(end + 1 >= q[i].first){
+				end = max(end,q[i].second);
+			}
+			else {
+				sta = q[i].first;
+				end = q[i].second;
+			}
+		}
+		bool flag = sta == 1 && end == len;
+		if(flag){
+			r = mid;
+		}
+		else {
+			l = mid + 1;
+		}
+//		cout << mid << endl;
+	}
+	
+	cout << r << endl;
+	
+	return 0;
+}
+```
+
+## [独木桥](https://www.luogu.com.cn/problem/P1007)
+
+```c++
+#include<bits/stdc++.h>
+#define endl '\n'
+using namespace std;
+typedef long long ll;
+const int N = 5 * 1e3 + 10;
+
+ll a[N];
+
+int main()
+{
+	int n,len;
+	cin >> len >> n;
+	if(n == 0){
+		cout << 0 << ' ' << 0 << endl;
+		return 0;
+	} 
+	for(int i = 1 ; i <= n ; i ++ )cin >> a[i];
+	
+	sort(a + 1,a + 1 + n);
+	
+	ll minTime = 0 , maxTime = 0 ;
+	for(int i = 1 ; i <= n ; i ++ ){
+		minTime = max(min(a[i],len + 1 - a[i]),minTime); 
+	}
+	maxTime = max(len + 1 - a[1],a[n]);
+	
+	cout << minTime << ' ' << maxTime << endl;
+	
+	return 0;
+}
+```
+
+## [轰炸](https://www.luogu.com.cn/problem/P1142)
+
+```c++
+#include<bits/stdc++.h>
+#define endl '\n'
+using namespace std;
+typedef long long ll;
+const int N = 710;
+
+struct point{
+	int x,y;
+}point[N];
+
+int main()
+{
+	ll n;
+	cin >> n;
+	for(int i = 1 ; i <= n ; i ++){
+		cin >> point[i].x >> point[i].y; 
+	}
+	
+	int ans = 0;
+	for(int i = 1 ; i < n ; i ++ ){
+		for(int j = i + 1 ; j <= n ; j ++ ){
+			int vx = point[j].x - point[i].x;
+			int vy = point[j].y - point[i].y;
+			int cnt = 2;
+			for(int k = 1 ; k <= n ; k ++ ){
+				if(k == i || k == j)continue;
+				int vy1 = point[k].y - point[i].y;
+				int vx1 = point[k].x - point[i].x;
+				if(vx1 * vy == vy1 * vx)cnt ++ ;
+				
+			}
+			ans = max(ans,cnt);
+		}
+	}
+
+	cout << ans << endl;
+	
+	return 0;
+}
+```
+
