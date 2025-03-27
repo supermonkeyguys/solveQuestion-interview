@@ -1652,3 +1652,139 @@ int main()
 }
 ```
 
+# 3/27 25
+
+## [李白打酒加强版](https://www.luogu.com.cn/problem/P8786)
+
+```c++
+#include<bits/stdc++.h>
+#define endl '\n'
+using namespace std;
+const int N = 110 , mod = 1e9 + 7;
+
+int dp[2 * N][N][N];
+
+int main()
+{
+	int n,m;
+	cin >> n >> m;
+	
+	dp[0][0][2] = 1;
+	for(int i = 0 ; i < n + m ; i ++ ){
+		for(int j = 0 ; j < m ; j ++ ){
+			for(int k = 0 ; k <= m ; k ++ ){
+				if(dp[i][j][k]){
+					if(k > 0)dp[i + 1][j + 1][k - 1] += dp[i][j][k] % mod;
+					if(k <= 50)dp[i + 1][j][2 * k] += dp[i][j][k] % mod;
+				}
+			}
+		}
+	}
+	
+	cout << dp[n + m][m][0] << endl;
+	
+	return 0;
+}
+```
+
+## [画中漂流](https://www.luogu.com.cn/problem/P8725)
+
+```c++
+#include<bits/stdc++.h>
+#define endl '\n'
+using namespace std;
+const int N = 1510 , mod = 1e9 + 7;
+
+int dp[2 * N][N];
+
+int main()
+{
+	int d,t,m;
+	cin >> d >> t >> m;
+	
+	dp[0][m] = 1;
+	for(int i = 1 ; i <= t ; i ++ ){
+		for(int j = 0 ; j <= m ; j ++ ){
+			int len = d + (m - j) - (i - (m - j));
+			if(len)dp[i][j] = (dp[i - 1][j + 1] + dp[i - 1][j]) % mod;
+		}
+	}
+	
+	cout << dp[t][0] << endl;
+	
+	return 0;
+}
+```
+
+## [飞机降落](https://www.luogu.com.cn/problem/P9241)
+
+```c++
+#include<bits/stdc++.h>
+#define endl '\n'
+#define int long long
+using namespace std;
+typedef long long ll;
+
+struct pp{
+	int T;
+	int D;
+	int L;
+}a[15]; 
+
+int n;
+bool pass[15];
+bool isOk;
+
+int path[15];
+
+void dfs(int index,int time){
+
+	if(index > n){
+		isOk = true;
+		return;
+	}
+	
+	for(int i = 1 ; i <= n ; i ++ ){
+		if(index == 1 && !pass[i]){
+			pass[i] = true;
+//			cout << i << endl;
+			int nextTime = a[i].T + a[i].L;
+			dfs(index + 1,nextTime);
+			pass[i] = false;
+		}
+		else if(!pass[i] && a[i].T + a[i].D >= time){
+			pass[i] = true;
+			int nextTime = max(time,a[i].T) + a[i].L;
+//			cout << i << endl;
+			dfs(index + 1,nextTime);
+			pass[i] = false;
+		}
+		else if(a[i].T + a[i].D < time && !pass[i])return;
+	}
+	
+}
+
+signed main()
+{
+	int t;
+	cin >> t;	
+	while(t -- ){
+		isOk = false;
+		memset(pass,false,sizeof pass);
+		
+		cin >> n;
+		for(int i = 1 ; i <= n ; i ++ ){
+			cin >> a[i].T >> a[i].D >> a[i].L;
+		}	
+		
+		dfs(1,0);
+		
+		if(isOk)cout << "YES" << endl;
+		else cout << "NO" << endl;
+
+	}
+		
+	return 0;
+}
+```
+
