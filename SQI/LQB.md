@@ -1788,3 +1788,137 @@ signed main()
 }
 ```
 
+# 3/28 25
+
+## [跳石头](https://www.luogu.com.cn/problem/P10914)
+
+```c++
+#include<bits/stdc++.h>
+#define endl '\n'
+using namespace std;
+const int N = 40010;
+
+bitset<N>dp[N];
+int c[N];
+
+int main()
+{
+	int n;
+	cin >> n;
+	for(int i = 1 ; i <= n ; i ++ )cin >> c[i];
+	
+	int ans = 0;
+	for(int i = n ; i >= 1 ; i -- ){
+		dp[i][c[i]] = 1;
+		if(i + c[i] <= n)dp[i] |= dp[i + c[i]];
+		if(2 * i <= n){
+			dp[i] |= dp[2 * i];
+		}
+		ans = max(ans,(int)dp[i].count());
+	}
+	
+	cout << ans << endl;
+	
+	return 0;
+}
+```
+
+# 3/29 25
+
+![](C:\Users\30292\Desktop\SQI\SQI\lqb_img\Snipaste_2025-03-29_22-21-27.png)
+
+```c++
+#include<bits/stdc++.h>
+#define int long long
+#define endl '\n'
+using namespace std;
+
+vector<vector<int>>res;
+vector<int>t;
+ int n;
+ int sum;
+ 
+ void dfs(int index){
+ 	
+ 	if(index > 10){
+ 		if(sum == n)res.push_back(t);
+		 return;	
+	}
+ 	
+ 	for(int i = 1 ; i <= 3 ; i ++ ){
+ 		t.push_back(i);
+ 		sum += i;
+ 		dfs(index + 1);
+ 		sum -= i;
+ 		t.pop_back();
+	 }
+ 	
+ }
+ 
+ signed main()
+ {
+ 	cin >> n;
+ 	
+ 	dfs(1);
+ 	
+ 	cout << res.size() << endl;
+ 	for(int i = 0 ; i < res.size() ; i ++ ){
+ 		for(int j = 0 ; j < 10 ; j ++ ){
+ 			cout << res[i][j] << ' ';
+		 }
+		 cout << endl;
+	 }
+ 	
+ 	return 0;
+ }
+```
+
+![](C:\Users\30292\Desktop\SQI\SQI\lqb_img\Snipaste_2025-03-29_22-22-28.png)
+
+```c++
+#include<bits/stdc++.h>
+#define int long long
+#define endl '\n'
+using namespace std;
+const int N = 10010;
+
+struct work{
+	int val;
+	int deadline;
+};
+
+bool cmp(struct work a,struct work b){
+	if(a.val != b.val)return a.val > b.val;
+	return a.deadline < b.deadline;
+}
+
+signed main(){
+	
+	int n;
+	cin >> n;
+	vector<work>pp; 
+	for(int i = 1 ; i <= n ; i ++ ){
+		int x,y;
+		cin >> x >> y;
+		pp.push_back({x,y});
+	}
+	sort(pp.begin(),pp.end(),cmp);
+	
+	vector<bool>isDo(N,false);
+	int ans = 0;
+	for(auto p : pp){
+		for(int j = p.deadline ; j >= 1 ; j -- ){
+			if(!isDo[j]){
+				isDo[j] = true;
+				ans += p.val;
+				break;
+			}
+		}
+	}
+	
+	cout << ans << endl;
+	
+	return 0;
+}
+```
+
