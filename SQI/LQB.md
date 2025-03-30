@@ -1922,3 +1922,89 @@ signed main(){
 }
 ```
 
+# 3/30 25
+
+## [AB路线](https://www.luogu.com.cn/problem/P9425)
+
+```c++
+#include<bits/stdc++.h>
+#define int long long
+#define endl '\n'
+using namespace std;
+const int N = 1010;
+
+bool vis[N][N][15];
+int mp[N][N];
+int n,m,k;
+
+struct pp{
+	int x;
+	int y;
+	int cnt;
+};
+
+
+int dx[4] = {0,1,0,-1};
+int dy[4] = {1,0,-1,0};
+
+bool check(int x,int y,int cnt){
+	bool t1 = (cnt % (2 * k) < k ? 1 : 0) == mp[x][y];
+	bool t2 = (x <= n && x > 0 && y <= m && y > 0);
+	bool t3 = vis[x][y][cnt % k];
+	
+	return t1 && t2 && !t3;
+}
+
+
+void bfs(){
+	
+	queue<pp>q;
+	q.push({1,1,0});
+	vis[1][1][0] = true;
+	
+	while(!q.empty()){
+		auto t = q.front();
+		q.pop();
+		
+		if(t.x == n && t.y == m){
+			cout << t.cnt;
+			return;
+		}		
+	
+		for(int i = 0 ; i < 4 ; i ++ ){
+			int x1 = t.x + dx[i];
+			int y1 = t.y + dy[i];
+			if(check(x1,y1,t.cnt + 1)){
+				q.push({x1,y1,t.cnt + 1});
+				vis[x1][y1][(t.cnt + 1) % k] = true;
+			}
+		}
+	}	
+	
+	cout << -1;
+} 
+
+
+
+signed main()
+{
+    ios::sync_with_stdio(0);
+    cin.tie(0);
+    cout.tie(0);
+	cin >> n >> m >> k;
+	
+	for(int i = 1 ; i <= n ; i ++ ){
+		for(int j = 1 ; j <= m ; j ++ ){
+			char op;
+			cin >> op;
+			if(op == 'A')mp[i][j] = 1;
+			else mp[i][j] = 0;
+		}
+	}
+	 
+	bfs();
+	
+	return 0;
+}
+```
+
