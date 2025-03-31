@@ -2008,3 +2008,155 @@ signed main()
 }
 ```
 
+# 3/31 25
+
+## [更小的数](https://www.luogu.com.cn/problem/P9232)
+
+```c++
+#include<bits/stdc++.h>
+#define int long long
+#define endl '\n'
+using namespace std;
+const int N = 5010;
+
+int dp[N][N];
+
+
+signed main()
+{
+	string x;
+	cin >> x;
+	int n = x.size();
+	string s = "0";
+	s += x;
+	
+	for(int i = 1 ; i < n ; i ++ ){
+		for(int j = 1 ; i + j <= n ; j ++ ){
+			if(s[j] >= s[j + i]){
+				if(s[j] > s[j + i])dp[j][j + i] ++ ;
+				dp[j][j + i] += dp[j + 1][j + i - 1];
+			}
+		}
+	}	
+	
+	int ans = 0; 
+	for(int i = 1 ; i < n ; i ++ ){
+		for(int j = 1 ; j <= n ; j ++ ){
+			if(dp[i][j])ans ++ ;
+		}
+	}
+	
+	cout << ans << endl;
+	
+	return 0;
+}
+```
+
+## [签到题](https://www.luogu.com.cn/problem/P9147)
+
+```c++
+#include<bits/stdc++.h>
+#define int long long
+#define endl '\n'
+using namespace std;
+const int N = 1e6 + 10;
+
+int a[N];
+int f[N] , g[N];
+
+signed main()
+{
+	int n;
+	cin >> n;
+	for(int i = 1 ; i <= n ; i ++ )cin >> a[i];
+	
+	f[1] = 1;
+	for(int i = 2 ; i <= n ; i ++ ){
+		f[i] = 1;
+		if(a[i] > a[i - 1])f[i] += f[i - 1]; 
+	}
+
+    g[n] = 1;
+	for(int i = n - 1 ; i >= 1 ; i -- ){
+		g[i] = 1;
+		if(a[i] < a[i + 1])g[i] += g[i + 1];
+	}
+	
+	int ans = 0;
+	for(int i = 1 ; i <= n ; i ++ ){
+		if(a[i - 1] + 1 <= a[i + 1] - 1 && i + 1 <= n && i - 1 >= 1){
+			int t = f[i - 1] + g[i + 1] + 1;
+			ans = max(t,ans);
+		}
+		else {
+			int t = max(f[i - 1] + 1,g[i + 1] + 1);
+			ans = max(ans,t); 
+		}
+	}
+	
+	cout << ans << endl;
+
+	return 0;
+}
+```
+
+## 送水
+
+![](C:\Users\30292\Desktop\SQI\SQI\lqb_img\Snipaste_2025-03-31_22-39-04.png)
+
+```c++
+#include<bits/stdc++.h>
+#define int long long
+#define endl '\n'
+using namespace std;
+const int N = 1e6 + 10;
+
+int x[N] , apperTimes[N] , totalApperTimes[N];
+int n;
+
+int getValue(int y,int a,int b){
+	int t1 = (a + b) * (y * apperTimes[y] - totalApperTimes[y]) + b * (totalApperTimes[N - 10] - y * n);
+	return t1;
+}
+
+signed main()
+{
+	ios::sync_with_stdio(0) , cin.tie(0) , cout.tie(0);
+	cin >> n;
+	for(int i = 1 ; i <= n ; i ++ ){
+		int t;
+		cin >> t; 
+		x[t] ++ ;
+	}
+	
+	for(int i = 1 ; i <= 1e6 ; i ++ ){
+		apperTimes[i] = apperTimes[i - 1] + x[i];
+		if(apperTimes[i])totalApperTimes[i] += totalApperTimes[i - 1] + i * x[i];
+		else totalApperTimes[i] += totalApperTimes[i - 1];
+	}
+	
+	int q;
+	cin >> q;
+	while(q -- ){
+		int a,b;
+		cin >> a >> b;
+		int l = 0 , r = 1e6;
+		while(l < r){
+			int mid = (l + r) / 2;
+			int rt = mid + 1;
+			
+			int v1 = getValue(mid,a,b);
+			int v2 = getValue(rt,a,b);
+			
+			if(v1 < v2)r = mid;
+			else l = mid + 1;
+		}
+		int ans1 = getValue(l,a,b);
+		int ans2 = getValue(r,a,b);
+		cout << min(ans1,ans2) << endl;
+	}
+	
+	return 0;
+}
+```
+
