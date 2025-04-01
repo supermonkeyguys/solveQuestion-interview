@@ -2160,3 +2160,142 @@ signed main()
 }
 ```
 
+# 4/1 25
+
+## [Likecloud-吃、吃、吃](https://www.luogu.com.cn/problem/P1508)
+
+```C++
+#include<bits/stdc++.h>
+#define int long long
+#define endl '\n'
+using namespace std;
+const int N = 210;
+
+vector<vector<int>>mp(N,vector<int>(N,-9999));
+int dp[N][N];
+
+signed main(){
+	ios::sync_with_stdio(0) , cin.tie(0) , cout.tie(0);
+	
+	int n,m;
+	cin >> m >> n;
+	
+	for(int i = 1 ; i <= m ; i ++ ){
+		for(int j = 1 ; j <= n ; j ++ ){ 
+			cin >> mp[i][j];
+		}
+	}
+	
+	for(int i = 1 ; i <= m ; i ++ ){
+		for(int j = 1 ; j <= n ; j ++ ){
+			dp[i][j] = max(dp[i - 1][j],max(dp[i - 1][j - 1],dp[i - 1][j + 1])) + mp[i][j];
+		}
+	}
+	
+	int p = (n + 1) / 2;
+	int ans = max(dp[m][p],max(dp[m][p - 1],dp[m][p + 1]));
+	
+	cout << ans << endl;
+	
+	return 0;
+}
+
+//dfs
+#include<bits/stdc++.h>
+#define int long long
+#define endl '\n'
+using namespace std;
+const int N = 210;
+
+int mp[N][N];
+int f[N][N];
+int n,m;
+int ans = 0;
+int p; 
+
+int dfs(int x,int y){
+	
+	if(f[x][y])return f[x][y];
+	
+	if(x <= 0 || y <= 0 || y > n || x > m)return 0;
+
+	return f[x][y] = max(dfs(x - 1,y) + mp[x - 1][y],max(dfs(x - 1,y - 1) + mp[x - 1][y - 1],dfs(x - 1,y + 1) + mp[x - 1][y + 1]));
+}
+
+signed main(){
+	ios::sync_with_stdio(0) , cin.tie(0) , cout.tie(0);
+	
+	cin >> m >> n;
+	
+	for(int i = 1 ; i <= m ; i ++ ){
+		for(int j = 1 ; j <= n ; j ++ ){
+			cin >> mp[i][j];
+		}
+	}
+	
+	p = (n + 1) / 2;
+	
+	ans = max(dfs(m,p - 1) + mp[m][p - 1],max(dfs(m,p) + mp[m][p],dfs(m,p + 1) + mp[m][p + 1]));
+	
+	cout << ans << endl;
+	
+	return 0;
+}
+```
+
+## [H数](https://www.luogu.com.cn/problem/P1748)
+
+```c++
+#include<bits/stdc++.h>
+#define int long long
+#define endl '\n'
+using namespace std;
+const int N = 1e4 + 10;
+
+vector<int>H;
+
+int myPow(int a,int b){
+	int res = 1;
+	for(int i = 1 ; i <= b ; i ++ )res *= a;
+	return res;
+}
+
+
+signed main(){
+	ios::sync_with_stdio(0) , cin.tie(0) , cout.tie(0);
+	
+	priority_queue<int,vector<int>,greater<int>>q;
+	set<int>st;
+	
+	int n;
+	cin >> n;
+	int cnt = 0;
+	int num = 0;
+	
+	st.insert(1);
+	q.push(1);
+	vector<int>pp = {2,3,5,7};
+	
+	while(cnt < n){
+		num = q.top();
+		q.pop();
+		cnt ++ ;
+		
+		if(cnt == n)break;
+		
+		for(auto p : pp){
+			int res = p * num;
+			if(st.find(res) == st.end()){
+				q.push(res);
+				st.insert(res);
+			}
+		}
+		
+	}
+	
+	cout << num << endl;
+	
+	return 0;
+}
+```
+
