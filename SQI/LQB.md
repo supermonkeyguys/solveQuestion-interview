@@ -2299,3 +2299,178 @@ signed main(){
 }
 ```
 
+# 4/2 25
+
+## [装备运输](https://www.luogu.com.cn/problem/P1794)
+
+```c++
+#include<bits/stdc++.h>
+#define int long long
+#define endl '\n'
+using namespace std;
+
+struct pp{
+	int t;
+	int v;
+	int g;
+}pp[510];
+
+int dp[510][510]; 
+
+signed main()
+{
+	int v,g;
+	cin >> v >> g;
+	int n;
+	cin >> n;
+	for(int i = 1 ; i <= n ; i ++ )cin >> pp[i].t >> pp[i].v >> pp[i].g;
+	
+	for(int i = 1 ; i <= n ; i ++ ){
+		for(int j = v ; j >= 1 ; j -- ){
+			for(int k = g ; k >= 1 ; k -- ){
+				if(j >= pp[i].v && k >= pp[i].g)
+				dp[j][k] = max(dp[j - pp[i].v][k - pp[i].g] + pp[i].t,dp[j][k]);	
+			}
+		}
+	}
+	
+	cout << dp[v][g] << endl;
+	
+	return 0;
+}
+```
+
+## [A % B Problem](https://www.luogu.com.cn/problem/P1865)
+
+```c++
+#include<bits/stdc++.h>
+#define int long long
+#define endl '\n'
+using namespace std;
+const int N = 1e6 + 10;
+
+bool noprime[N];
+int cnt[N];
+
+bool getPrime(int x){
+	if(x == 1)return false;
+	for(int i = 2 ; i * i <= x ; i ++ ){
+		if(x % i == 0)return false;
+	}
+	return true;
+}
+
+void primeFilter(int l,int r){
+	
+	for(int i = l ; i <= r ; i ++ ){
+		if(getPrime(i))
+			for(int j = 2 * i ; j <= r ; j += i)
+				noprime[j] = true;
+	}
+	
+	noprime[0] = true;
+	noprime[1] = true; 
+
+	for(int i = l ; i <= r ; i ++ ){
+		if(!noprime[i]){
+			cnt[i] ++ ;
+		}
+		cnt[i] += cnt[i - 1];
+	}	
+	
+}
+
+signed main()
+{
+	int n,m;
+	cin >> n >> m;
+	primeFilter(1,m);
+	while(n -- ){
+		int l,r;
+		cin >> l >> r;
+		if(l < 1 || r > m){
+			cout << "Crossing the line" << endl;
+			continue;
+		}
+		
+		cout << cnt[r] - cnt[l - 1] << endl;
+				
+	}
+	
+	return 0;
+}
+```
+
+## [接龙数列](https://www.luogu.com.cn/problem/P9242)
+
+```c++
+#include<bits/stdc++.h>
+#define int long long
+#define endl '\n'
+using namespace std;
+
+int dp[10];
+string a;
+
+signed main()
+{
+	int n;
+	cin >> n;
+	for(int i = 1 ; i <= n ; i ++ ){
+		cin >> a;
+		int l = a.size() - 1;
+		int p = a[0] - '0';
+		int q = a[l] - '0';
+		dp[q] = max(dp[q],dp[p] + 1);
+	}
+	
+	int len = 0;
+	for(int i = 0 ; i <= 9 ; i ++ )len = max(len,dp[i]);
+	
+	cout << n - len << endl;
+	
+	return 0;
+}
+```
+
+## [后缀式表达](https://www.luogu.com.cn/problem/P8683)
+
+```c++
+#include<bits/stdc++.h>
+#define int long long 
+#define endl '\n'
+using namespace std;
+const int N = 2 * 1e5 + 10;
+
+vector<int>a,b;
+
+signed main()
+{
+	int n,m;
+	cin >> n >> m;
+	for(int i = 1 ; i <= n + m + 1 ; i ++ ){
+		int x;
+		cin >> x;
+		a.push_back(x);
+	}
+	
+	sort(a.begin(),a.end());
+	
+	int sum = 0;
+
+	if(m == 0){
+		for(auto p : a)sum += p;
+	}
+	else {
+		sum = a[(int)a.size() - 1] - a[0];
+		for(int i = 1 ; i < a.size() - 1 ; i ++ ){
+			sum += abs(a[i]);
+		}
+	}
+
+	cout << sum << endl;
+	
+	return 0;
+}
+```
+
