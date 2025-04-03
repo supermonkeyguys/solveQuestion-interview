@@ -2474,3 +2474,83 @@ signed main()
 }
 ```
 
+# 4/3 25
+
+## [整数拼接](https://www.luogu.com.cn/problem/P8708)
+
+```c++
+#include<bits/stdc++.h>
+#define int long long
+#define endl '\n'
+using namespace std;
+const int N = 1e5 + 10;
+
+int a[N];
+string s[N];
+string k;
+
+int cmp(string a){
+	if(a.size() > k.size())return -1;
+	if(a.size() < k.size())return 1;
+	
+	for(int i = 0 ; i < a.size() ; i ++ ){
+		if(a[i] - '0' > k[i] - '0')return -1;
+		if(a[i] - '0' < k[i] - '0')return 1;
+	}
+	
+	return 0;
+}
+
+signed main()
+{
+	ios::sync_with_stdio(0) , cin.tie(0) , cout.tie(0);
+	int n;
+	cin >> n >> k;
+	for(int i = 1 ; i <= n ; i ++ )cin >> a[i];
+	
+	sort(a + 1 , a + 1 + n);
+	for(int i = 1 ; i <= n ; i ++ ){
+		s[i] = to_string(a[i]);
+	}
+	
+	int l = 1 , r = n;
+	int cnt = 0;
+	while(l <= r){
+		string t1 = s[l] + s[r];
+		int t = cmp(t1);
+		
+		if(t == -1) -- r;
+		else if(t == 0){
+			cnt += r - l;
+			-- r;
+			++ l;
+		}
+		else {
+			cnt += r - l;
+			 ++ l;
+		}
+	}
+	
+	l = 1 ,r = n;
+	while(l <= r){
+		string t1 = s[r] + s[l];
+		int t = cmp(t1);
+		
+		if(t == -1) -- r;
+		else if(t == 0){
+			cnt += r - l;
+			-- r;
+			++ l;
+		}
+		else {
+			cnt += r - l;
+			 ++ l;
+		}
+	}
+	
+	cout << cnt << endl;
+	
+	return 0;
+}
+```
+
