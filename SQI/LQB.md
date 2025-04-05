@@ -2554,3 +2554,245 @@ signed main()
 }
 ```
 
+# 4/4 25
+
+## [灵梦的字符串问题](https://ac.nowcoder.com/acm/contest/106509/C)
+
+```c++
+#include<bits/stdc++.h>
+#define int long long
+#define endl '\n' 
+using namespace std;
+
+signed main()
+{
+	int n,m;
+	cin >> n >> m; 
+	string s;
+	cin >> s;
+	vector<int>a(n);
+	for(int i = 0 ; i < n ; i ++ ){
+		cin >> a[i];
+	}
+	
+	vector<int>p;
+	int l = 0;
+	for(int i = 0 ; i < n - 1 ; i ++ ){
+		if(s[i] < s[i + 1]){
+			while(s[l] != s[i]) ++ l;
+			for(int j = l ; j <= i ; j ++ )p.push_back(j);
+			l = i + 1;
+		}
+	}
+	
+	vector<bool>isChosen(n,false);
+	for(auto i : p){
+		if(m >= a[i]){
+			isChosen[i] = true;
+			m -= a[i];
+		}
+	}
+	
+	string res;
+	for(int i = 0 ; i < n ; i ++ ){
+		res += s[i];
+		if(isChosen[i])res += s[i];
+	}
+	
+	cout << res << endl;
+		
+	return 0;
+}
+```
+
+## [带分数](https://www.luogu.com.cn/problem/P8599)
+
+```c++
+#include<bits/stdc++.h>
+#define int long long
+#define endl '\n'
+using namespace std;
+
+vector<int>t; 
+int ans;
+bool ip[10];
+int n;
+
+void isT(){
+
+	int a = 0;
+	for(int i = 1 ; i <= 7 ; i ++ ){
+		a = a * 10 + t[i];
+		int b = 0;
+		for(int j = i + 1 ; j <= 8 ; j ++ ){
+			b = b * 10 + t[j];
+			int c = 0;
+			for(int k = j + 1 ; k <= 9 ; k ++ ){
+				c = c * 10 + t[k];
+			}
+			
+//			cout << a << ' ' << b << ' ' << c << endl;
+ 			if(b % c == 0 && a + b / c == n)ans ++ ;
+		}
+	}
+	
+}
+
+void dfs(int index){
+	
+	if(index == 10){
+		isT();
+		return;
+	}
+	
+	for(int i = 1 ; i <= 9 ; i ++ ){
+		if(!ip[i]){
+			t.push_back(i);
+			ip[i] = true;
+			dfs(index + 1);
+			t.pop_back();
+			ip[i] = false;
+		}
+	}
+	
+	
+}
+
+signed main()
+{
+	cin >> n;
+	t.push_back(0);
+	
+	dfs(1);
+	
+	cout << ans << endl;
+	
+	return 0;
+}
+```
+
+## [蚂蚁感冒](https://www.luogu.com.cn/problem/P8611)
+
+```c++
+#include<bits/stdc++.h>
+#define int long long
+#define endl '\n'
+using namespace std;
+
+signed main()
+{
+	int n;
+	int mid;
+	cin >> n;
+	cin >> mid;
+	int num = 1;
+	
+	int l = 0 , r = 0; 
+	for(int i = 1 ; i < n ; i ++ ){
+		int x;
+		cin >> x;
+		if(abs(x) > abs(mid) && x < 0)r ++ ;
+		if(abs(x) < abs(mid) && x > 0)l ++ ;
+	}
+	
+	int ans = 0;
+	if(r == 0 && mid > 0)ans = 1;
+	if(l == 0 && mid < 0)ans = 1;
+	else ans = num + l + r;
+	
+	cout << ans << endl;
+	
+	return 0;
+}
+```
+
+# 4/5 25
+
+## [123](https://www.luogu.com.cn/problem/P8762)
+
+```c++
+#include<bits/stdc++.h>
+#define int long long
+#define endl '\n'
+using namespace std;
+const int N = 2 * 1e6 + 10;
+
+vector<int>s(N);
+vector<int>f(N);
+
+signed main()
+{
+	for(int i = 1 ; i <= N ; i ++ ){
+		s[i] += s[i - 1] + i; 
+		f[i] += f[i - 1] + s[i];
+	}
+	int T;
+	int l,r;
+	cin >> T;
+	while(T -- ){
+		cin >> l >> r;
+		l -- ;
+		int t1 = lower_bound(s.begin(),s.end(),l) - s.begin() - 1;
+		int lev_l = max(0LL,t1);
+		int t2 = lower_bound(s.begin(),s.end(),r) - s.begin() - 1;
+		int lev_r = max(0LL,t2);
+		int sumL = f[lev_l];
+		int sumR = f[lev_r];
+		sumL += (l - s[lev_l] + 1) * (l - s[lev_l]) / 2;
+		sumR += (r - s[lev_r] + 1) * (r - s[lev_r]) / 2;
+		
+		cout << sumR - sumL << endl;
+	}
+	
+	return 0;
+}
+```
+
+## [砍竹子](https://www.luogu.com.cn/problem/P8787)
+
+```c++
+#include<bits/stdc++.h>
+#define int long long
+#define endl '\n'
+using namespace std;
+const int N = 2 * 1e5 + 10;
+
+vector<int>h(N);
+vector<int>m(N);
+
+int getNewH(int x){
+	return (int)sqrt((int)(x / 2) + 1);
+}
+
+signed main()
+{
+	int n;
+	cin >> n;
+	int res = 0;
+	for(int i = 1 ; i <= n ; i ++ ){
+		cin >> h[i];
+		int t = h[i];
+		while(t != 1){
+			m[i] ++ ;
+			t = getNewH(t);
+		}
+		res = max(m[i],res);
+	}
+	
+	int ans = 0;
+	for(int i = res ; i >= 1 ; -- i){
+		for(int j = 1 ; j <= n ; j ++ ){
+			if(m[j] == i){
+				if(h[j] != h[j + 1])ans ++ ;
+				m[j] -- ;
+				h[j] = getNewH(h[j]);
+			}
+		}
+	}
+	
+	cout << ans << endl;
+	
+	return 0;
+}
+```
+
