@@ -2796,3 +2796,181 @@ signed main()
 }
 ```
 
+# 4/6 25
+
+## [轨道炮](https://www.luogu.com.cn/problem/P8695)
+
+```c++
+#include<bits/stdc++.h>
+#define int long long
+#define endl '\n'
+using namespace std;
+const int N = 1010 , M = 1e6 + 10;
+
+struct position{
+	int x,y;
+	int vx , vy;
+		
+};
+
+position pos[N];
+
+int nums[M];
+
+signed main()
+{
+	int n;
+	cin >> n;
+	for(int i = 1 ; i <= n ; i ++ ){
+		int v;
+		char op;
+		cin >> pos[i].x >> pos[i].y;
+		cin >> v >> op;
+		if(op == 'L')pos[i].vx = -v;
+		else if(op == 'R')pos[i].vx = v;
+		else if(op == 'U')pos[i].vy = v;
+		else pos[i].vy = -v;
+	}
+	
+	int ans = 0;
+	for(int i = 0 ; i <= N ; i ++ ){
+		map<int,int>x,y;
+		for(int j = 1 ; j <= n ; j ++ ){
+			x[pos[j].x + pos[j].vx * i] ++ ;
+			y[pos[j].y + pos[j].vy * i] ++ ;
+		}
+		for(auto p : x){
+			ans = max(ans,p.second);
+		}
+		for(auto p : y){
+			ans = max(ans,p.second);
+		}
+		
+	}
+	
+	cout << ans << endl;
+	
+	return 0;
+}
+```
+
+## [卡牌](https://www.luogu.com.cn/problem/P8800)
+
+```c++
+#include<bits/stdc++.h>
+#define int long long
+#define endl '\n'
+using namespace std;
+const int N = 2 * 1e6 + 10;
+
+int a[N] , b[N];
+int n,m;
+
+bool check(int x){
+		
+	int t = m;
+	bool flag = true;
+	
+	for(int i = 1 ; i <= n ; i ++ ){
+//		cout << a[i] << ' ';
+		if(a[i] >= x)continue;
+		else {
+			if(b[i] >= x - a[i]){
+				t -= x - a[i];
+			}
+			else {
+				flag = false;
+				break;
+			}
+			
+			if(t < 0){
+				flag = false;
+				break;
+			}
+		}
+	}
+	
+//	cout << endl;
+	
+	if(flag){
+//		cout << 1 << endl; 
+		return true;
+	}
+	
+//	cout << 0 << endl;
+	return false;
+}
+
+
+signed main(){
+	cin >> n >> m;
+	
+	for(int i = 1 ; i <= n ; i ++ )cin >> a[i];
+	for(int i = 1 ; i <= n ; i ++ )cin >> b[i];
+	
+	int l = 0 , r = N;
+	while(l < r){
+		int mid = (l + r + 1) / 2;
+		if(check(mid)){
+			l = mid;		
+		}
+		else {
+			r = mid - 1;
+		}
+	}
+	
+	cout << l << endl;
+	
+	return 0;
+}
+```
+
+## [答疑](https://www.luogu.com.cn/problem/P8732)
+
+```c++
+#include<bits/stdc++.h>
+#define int long long
+#define endl '\n'
+using namespace std;
+const int N = 1010;
+
+struct pp{
+	int t;
+	int e;
+	int total;
+}pp[N];
+
+bool cmp(struct pp p1,struct pp p2){
+	if(p1.total != p2.total)return p1.total < p2.total;
+	if(p1.t != p2.t)return p1.t < p2.t;
+	return p1.e < p2.e;
+}
+
+
+signed main()
+{
+	int n;
+	cin >> n;
+	for(int i = 1 ; i <= n ; i ++ ){
+		int x,y;
+		cin >> x >> y >> pp[i].e;
+		pp[i].t = x + y;
+		pp[i].total = x + y + pp[i].e;
+	}	
+
+	sort(pp + 1,pp + 1 + n,cmp);
+	
+	int ans = 0;
+	int now = 0;
+	for(int i = 1 ; i <= n ; i ++ ){
+		now += pp[i].t;
+		ans += now;
+		now += pp[i].e;
+	}
+	
+	cout << ans << endl;
+	
+	return 0;
+}
+```
+
