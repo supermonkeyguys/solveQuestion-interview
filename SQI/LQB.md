@@ -2974,3 +2974,239 @@ signed main()
 }
 ```
 
+## [小红杀怪](https://ac.nowcoder.com/acm/contest/90960/D)
+
+```c++
+#include<bits/stdc++.h>
+#define int long long
+#define endl '\n'
+using namespace std;
+
+signed main()
+{
+	int a,b,x,y;
+	cin >> a >> b >> x >> y;
+	
+	int ans = 0;
+	bool f = false;
+	for(int i = 1 ; ; i ++ ){
+		for(int j = i ; j >= 0 ; j -- ){
+			for(int k = 0 ; j + k <= i ; k ++ ){
+				int h1 = a;
+				int h2 = b;
+				h1 -= k * y;
+				h2 -= k * y;
+				if(h1 > 0 && h2 <= 0){
+					h1 -= j * x;
+					if(h1 <= 0){
+						ans = i;
+						f = true;
+						break;
+					}	
+				}
+				else if(h1 <= 0 && h2 > 0){
+					h2 -= j * x;
+					if(h2 <= 0){
+						ans = i;
+						f = true;
+						break;
+					} 
+				}
+				else if(h1 <= 0 && h2 <= 0){
+					ans = i;
+					f = true;
+					break;
+				}
+				else {
+					
+					for(int l = 1 ; l < j ; l ++ ){
+						int hp1 = h1;
+						int hp2 = h2;
+						hp1 -= l * x;
+						hp2 -= (j - l) * x;
+						if(hp1 <= 0 && hp2 <= 0){
+							ans = i;
+							f = true;
+							break;
+						}
+					}
+				}
+				if(f)break;
+			}
+			if(f)break;
+		}
+		if(f)break;
+	}
+	
+	cout << ans << endl;
+	
+	return 0;
+}
+```
+
+# 4/7 25
+
+## [小梦的AB交换](https://www.luogu.com.cn/problem/U535982)
+
+```c++
+#include<bits/stdc++.h>
+#define int long long
+#define endl '\n'
+using namespace std;
+
+
+signed main()
+{
+	int T;
+	cin >> T;
+	string a;
+	while(T -- ){
+		int n;
+		cin >> n;
+		cin >> a;
+		string s1;
+		string s2;
+		for(int i = 0 ; i < n ; i ++ )s1 += "AB";
+		for(int i = 0 ; i < n ; i ++ )s2 += "BA";
+		int ds1 = 0;
+		int ds2 = 0;
+		
+		for(int i = 0 ; i < 2 * n ; i ++ ){
+			if(a[i] != s1[i])ds1 ++ ;
+			if(a[i] != s2[i])ds2 ++ ;
+		}
+		
+		int ans = min(ds1,ds2) / 2;
+		
+		cout << ans << endl;
+	}
+	
+	return 0;
+}
+```
+
+## [零的数列 Zero Sum](https://www.luogu.com.cn/problem/P1473)
+
+```c++
+#include<bits/stdc++.h>
+#define int long long
+#define endl '\n'
+using namespace std;
+
+int n;
+vector<int>a(12,0);
+vector<char>p(12);
+
+void dfs(int index,int sum,int prev,char last){
+	
+	if(index == n){
+		if(last == '+')sum += prev;
+		else sum -= prev;
+		
+		if(sum == 0){
+			cout << 1;
+			for(int i = 1 ; i < n ; i ++ ){
+				cout << p[i] << a[i];
+			}
+			cout << endl;
+		}
+	} 
+	else{
+		p[index] = ' ';
+		dfs(index + 1,sum,prev * 10 + a[index],last);
+		
+		p[index] = '+';
+		if(last == '+'){
+			dfs(index + 1,sum + prev,a[index],'+');
+		}
+		else {
+			dfs(index + 1,sum - prev,a[index],'+');
+		}
+		
+		p[index] = '-';
+		if(last == '+'){
+			dfs(index + 1,sum + prev,a[index],'-');
+		}
+		else {
+			dfs(index + 1,sum - prev,a[index],'-');
+		}
+	}
+	
+	
+}
+
+signed main()
+{
+	cin >> n;
+	for(int i = 1 ; i < n ; i ++ )a[i] = i + 1;
+	
+	dfs(1,0,1,'+');
+	
+	return 0;
+}
+```
+
+## [马的遍历](https://www.luogu.com.cn/problem/P1443)
+
+```c++
+#include<bits/stdc++.h>
+#define int long long
+#define endl '\n'
+using namespace std;
+typedef pair<int,int>pp;
+const int N = 410;
+
+int n,m;
+int x,y;
+int mp[N][N];
+bool p[N][N];
+int dx[8] = {-2,-2,-1,-1,1,1,2,2};
+int dy[8] = {-1,1,-2,2,-2,2,-1,1};
+
+void bfs(){
+
+	queue<pp>q;	
+	q.push({x,y});
+	
+	while(!q.empty()){
+		
+		auto t = q.front();
+		q.pop();
+	
+		int i = t.first;
+		int j = t.second;
+//		cout << i << ' ' << j << endl;
+		
+		if(p[i][j])continue; 
+		p[i][j] = true; 
+		
+		for(int k = 0 ; k < 8 ; k ++ ){
+			int x1 = dx[k] + i;
+			int y1 = dy[k] + j;
+			if(x1 <= 0 || x1 > n || y1 <= 0 || y1 > m)continue;
+			if(p[x1][y1])continue;
+			mp[x1][y1] = mp[i][j] + 1;
+			q.push({x1,y1});
+		}
+	}
+	
+}
+
+signed main()
+{
+	cin >> n >> m >> x >> y;
+	
+	bfs();
+	
+	for(int i = 1 ; i <= n ; i ++ ){
+		for(int j = 1 ; j <= m ; j ++ ){
+			if(p[i][j])cout << mp[i][j] << "   ";
+			else cout << -1 << "   ";
+		}
+		cout << endl;
+	}
+	
+	return 0;
+}
+```
+
