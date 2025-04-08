@@ -3210,3 +3210,336 @@ signed main()
 }
 ```
 
+# 4/8 25
+
+## [打开所有的灯](https://www.luogu.com.cn/problem/P2040)
+
+```c++
+#include<bits/stdc++.h>
+#define int long long
+#define endl '\n'
+using namespace std;
+
+int mp[5][5];
+bool flag;
+int dx[4] = {-1,1,0,0};
+int dy[4] = {0,0,-1,1};
+
+void turnOffOn(int x,int y){
+	for(int i = 0 ; i < 4 ; i ++ ){
+		int x1 = x + dx[i];
+		int y1 = y + dy[i];
+		if(x1 <= 0 || x1 > 3 || y1 <= 0 || y1 > 3)continue;
+		if(mp[x1][y1] == 1)mp[x1][y1] = 0;
+		else mp[x1][y1] = 1;
+	}
+}
+
+void dfs(int cnt){
+	
+	if(cnt == 0){
+		bool isOk = true;
+		for(int i = 1 ; i <= 3 ; i ++ ){
+			for(int j = 1 ; j <= 3 ; j ++ ){
+				if(!mp[i][j]){
+					isOk = false;
+					break;
+				}
+			}
+			if(!isOk)break;
+		}
+		if(isOk)flag = true;
+		return;
+	}
+	
+	for(int i = 1 ; i <= 3 ; i ++ ){
+		for(int j = 1 ; j <= 3 ; j ++ ){
+			if(flag)return;
+			if(mp[i][j] == 0){
+				mp[i][j] = 1;
+				turnOffOn(i,j);
+				dfs(cnt - 1);
+				turnOffOn(i,j);
+				mp[i][j] = 0;
+				
+				if(flag)return;
+				
+			}
+		}
+	}
+	
+	
+}
+
+signed main()
+{
+	for(int i = 1 ; i <= 3 ; i ++ ){
+		for(int j = 1 ; j <= 3 ; j ++ ){
+			cin >> mp[i][j];
+		}
+	}
+	
+	for(int i = 0 ; ; i ++ ){
+//		cout << i << endl;
+		dfs(i);
+		if(flag){
+			cout << i << endl;
+			break;
+		}
+	}
+	
+	return 0;
+}
+```
+
+## [算式](https://www.luogu.com.cn/problem/P1388)
+
+```c++
+#include<bits/stdc++.h>
+#define int long long
+#define endl '\n'
+using namespace std;
+
+int dp[20][20];
+int a[20] , s[20];
+int n,k;
+int ans;
+
+int f(){
+	for(int i = 1 ; i <= n ; i ++ )dp[i][i] = a[i];
+	
+	for(int l = 1 ; l <= n ; l ++ ){
+		for(int i = 1 ; i + l - 1 <= n ; i ++ ){
+			int j = i + l - 1;
+			for(int k = i ; k < j ; k ++ ){
+				int res = s[k] == 1 ? dp[i][k] + dp[k + 1][j] : dp[i][k] * dp[k + 1][j];
+				dp[i][j] = max(dp[i][j],res);
+			}
+		}
+	}
+		
+	return dp[1][n];
+}
+
+void dfs(int index,int t1,int t2){
+	if(index == n){
+		memset(dp,0,sizeof dp);
+		ans = max(ans,f());
+		return;
+	}
+	if(t1 < k){
+		s[index] = 2;
+		dfs(index + 1,t1 + 1,t2);
+	}
+	if(t2 < n - k - 1){
+		s[index] = 1;
+		dfs(index + 1,t1,t2 + 1);
+	}
+	
+}
+
+signed main()
+{
+	cin >> n >> k;
+	for(int i = 1 ; i <= n ; i ++ )cin >> a[i];	
+	
+	dfs(1,0,0);
+	
+	cout << ans << endl;
+	
+	return 0;
+}
+```
+
+## [质数补全](https://www.luogu.com.cn/problem/B4158)
+
+```c++
+#include<bits/stdc++.h>
+#define int long long
+#define endl '\n'
+using namespace std;
+
+int l;
+string s;
+bool f;
+int res;
+
+bool isPrime(int x){
+	for(int i = 2 ; i * i <= x ; i ++ ){
+		if(x % i == 0)return false;
+	}
+	return true;
+}
+
+void dfs(int index){
+	
+	if(index == l){
+		res = 0;
+		for(int i = 0 ; i < l ; i ++ ){
+			res = res * 10 + s[i] - '0';
+		}
+		if(isPrime(res))f = true;
+		return;
+	}
+	
+	if(s[index] != '*')dfs(index + 1);
+	else {
+		for(int i = 0 ; i <= 9 ; i ++ ){
+			s[index] = i + '0';
+			dfs(index + 1);
+			if(f)return;
+			s[index] = '*';
+		}
+	} 
+	
+}
+
+signed main()
+{
+	int t;
+	cin >> t;
+	while(t -- ){
+		f = false;
+		cin >> s;
+		l = s.size();	
+//		cout << l << endl;
+		dfs(0);
+		if(f)cout << res << endl;
+		else cout << -1 << endl;	
+	}
+	
+	return 0;
+}
+```
+
+## [Backward Digit Sums G/S](https://www.luogu.com.cn/problem/P1118)
+
+```c++
+#include<bits/stdc++.h>
+#define int long long
+#define endl '\n'
+using namespace std;
+
+int n,sum;
+vector<int>t;
+int c[20];
+bool p[20];
+bool f;
+
+void dfs(int index){
+//	cout << index << endl;
+	if(index > n){
+		int res = 0;
+		
+		for(int i = 0 ; i < t.size() ; i ++ ){
+			res += t[i] * c[i];
+		}
+		
+		if(res == sum){
+			f = true;
+			for(auto i : t)cout << i << ' ';
+		}
+		
+		return;
+	}
+	
+	for(int i = 1 ; i <= n ; i ++ ){
+		if(!p[i]){
+			t.push_back(i);
+			p[i] = true;
+			dfs(index + 1);
+			if(f)return;
+			p[i] = false;
+			t.pop_back();
+		}
+	}
+	
+}
+
+//组合数学 
+int ff(int k){
+	int res = 1;
+	if(k > n - 1 - k){
+		k = n - 1 - k;
+	}
+	for(int i = 0 ; i < k ; i ++ ){
+		res *= (n - 1 - i);
+		res /= (i + 1);
+	}
+	
+	return res;
+}
+
+void getC(){
+	for(int i = 0 ; i < n ; i ++ ){
+		c[i] = ff(i);
+	} 
+} 
+
+signed main()
+{
+	cin >> n >> sum;
+	
+	getC();
+	
+	dfs(1);
+	
+	return 0;
+}
+```
+
+## [单词接龙](https://www.luogu.com.cn/problem/P1019)
+
+```c++
+#include<bits/stdc++.h>
+#define int long long
+#define endl '\n'
+using namespace std;
+
+string s[25];
+int p[25];
+int n; 
+int ans;
+
+void dfs(string tmp){
+
+	ans = max(ans,(int)tmp.size());
+	
+	for(int i = 1 ; i <= n ; i ++ ){
+		if(p[i] < 2){
+			for(int j = 1 ; j < min(tmp.size(),s[i].size()) ; j ++ ){
+				string t1 = tmp.substr(tmp.size() - j);
+				string t2 = s[i].substr(0,j);
+				if(t1 == t2){
+					++ p[i];
+					dfs(tmp + s[i].substr(j));
+					-- p[i];
+				}
+			}
+		}
+	} 
+
+}
+
+signed main()
+{
+	cin >> n;
+	for(int i = 1 ; i <= n ; i ++ )cin >> s[i];
+	char goat;
+	cin >> goat;
+	
+	
+	for(int i = 1 ; i <= n ; i ++ ){
+		if(s[i][0] == goat){
+			p[i] ++ ;
+			dfs(s[i]);
+			p[i] -- ;
+		}
+	}
+	
+	cout << ans << endl;
+	
+	return 0;
+}
+```
+
