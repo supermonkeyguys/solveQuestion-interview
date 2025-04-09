@@ -3543,3 +3543,124 @@ signed main()
 }
 ```
 
+# 4/9 25
+
+## [小苯的区间和疑惑](https://www.luogu.com.cn/problem/U549625)
+
+```c++
+#include<bits/stdc++.h>
+#define int long long
+#define endl '\n'
+using namespace std;
+const int N = 2 * 1e5 + 10 , mod = 1e9 + 10;
+
+int a[N];
+int l[N] , r[N];
+
+signed main()
+{
+	int n;
+	cin >> n;
+	for(int i = 1 ; i <= n ; i ++ ){
+		cin >> a[i];
+	}
+	
+	int mx = -mod;
+	for(int i = 1 ; i <= n ; i ++ ){
+		mx = max(mx + a[i],a[i]);
+		l[i] = mx;
+		
+	}
+	mx = -mod;
+	for(int i = n ; i >= 1 ; i -- ){
+		mx = max(a[i] + mx,a[i]);
+		r[i] = mx;
+	}
+	
+	for(int i = 1 ; i <= n ; i ++ ){
+		cout << l[i] + r[i] - a[i];
+		if(i != n)cout << ' ';
+	}
+	
+	return 0;
+}
+```
+
+## [小梦的宝石收集](https://www.luogu.com.cn/problem/U535992)
+
+```c++
+#include<bits/stdc++.h>
+#define int long long
+#define endl '\n'
+using namespace std;
+const int N = 5 * 1e5 + 10;
+
+int a[N];
+
+signed main()
+{
+	ios::sync_with_stdio(0) , cin.tie(0) , cout.tie(0);
+	int T;
+	cin >> T;
+	while(T -- ){
+		int n,k;
+		cin >> n >> k;
+		
+		for(int i = 1 ; i <= n ; i ++ )cin >> a[i];
+		sort(a + 1,a + 1 + n);
+		
+		int ans = 1e18;
+		for(int i = 1 ; i <= n ; i ++ ){
+			int l = i , r = n;
+			if(i - 1 > k)break;
+			while(l < r){
+				int mid = (l + r) / 2;
+				int cnt = (i - 1) + (n - mid) + min(i - 1,n - mid);
+				if(cnt <= k)r = mid;
+				else l = mid + 1;
+			}
+			ans = min(ans,a[l] - a[i]); 
+		}
+		cout << ans << endl;
+	}
+	
+	return 0;
+}
+```
+
+## [绝世好题](https://www.luogu.com.cn/problem/P4310)
+
+```c++
+#include<bits/stdc++.h>
+#define int long long
+#define endl '\n'
+using namespace std;
+
+int dp[35];
+
+signed main()
+{
+	int n;
+	cin >> n;
+	int x;
+	int ans = 0;
+	for(int i = 1 ; i <= n ; i ++ ){
+		cin >> x;
+		
+		int t = 1;
+		for(int j = 0 ; j <= 30 ; j ++ ){
+			if((1 << j) & x)t = max(dp[j] + 1,t);
+		}
+		for(int j = 0 ; j <= 30 ; j ++ ){
+			if((1 << j) & x)dp[j] = max(dp[j],t);
+		}
+		
+		ans = max(ans,t);
+	}
+	
+	cout << ans << endl;
+	
+	return 0;
+}
+```
+
