@@ -3664,3 +3664,204 @@ signed main()
 }
 ```
 
+# 4/10 25
+
+## [拔河](https://www.luogu.com.cn/problem/P10429)
+
+```c++
+#include<bits/stdc++.h>
+#define int long long
+#define endl '\n'
+using namespace std;
+const int N = 1e3 + 10;
+
+int a[N];
+
+signed main()
+{
+	int n;
+	cin >> n;
+	for(int i = 1 ; i <= n ; i ++ ){
+		cin >> a[i];
+		a[i] += a[i - 1];
+	}
+	
+	multiset<int>s;
+	for(int i = 1 ; i <= n ; i ++ ){
+		for(int j = i ; j <= n ; j ++ ){
+			s.insert(a[j] - a[i - 1]);
+		}
+	}
+	
+	int ans = 1e9 + 10;
+	for(int i = 1 ; i < n ; i ++ ){
+		for(int j = i ; j <= n ; j ++ ){
+			auto pos = s.find(a[j] - a[i - 1]);
+			s.erase(pos);
+		}
+		
+		for(int j = 1 ; j <= i ; j ++ ){
+			auto t = a[i] - a[j - 1];
+			auto pos = s.lower_bound(t);
+			if(pos != s.end())ans = min(ans,abs(*pos - t));
+			if(pos != s.begin()) pos -- , ans = min(ans,abs(*pos - t));
+		}
+	}
+		
+	cout << ans << endl;
+	
+	return 0;
+}
+```
+
+## [扫雷](https://www.luogu.com.cn/problem/P8785)
+
+暴力dfs 45分
+
+```c++
+#include<bits/stdc++.h>
+#define int long long
+#define endl '\n'
+using namespace std;
+const int N = 5 * 1e4 + 10;
+
+struct bm{
+	int x;
+	int y;
+	int r;
+};
+
+bm p1[N] , p2[N];
+bool p[N];
+int ans;
+int n,m;
+
+int getDistance(int i,int j,int op){
+	int x1,x2,y1,y2;
+	x1 = p1[i].x;
+	y1 = p1[i].y;
+	if(op == 2)x2 = p2[j].x;
+	else x2 = p1[j].x;
+	if(op == 2)y2 = p2[j].y;
+	else y2 = p1[j].y;
+	
+	return (x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1);
+}
+
+void dfs(int x,int op){
+//	cout << x << ' ' <<  op << endl;
+	for(int i = 1 ; i <= n ; i ++ ){
+//		cout << i << endl;
+		if(p[i])continue;
+		int l = getDistance(i,x,op);
+		if(l <= p2[x].r * p2[x].r && op == 2){
+			p[i] = true;
+			ans ++ ;
+			dfs(i,1);
+		}
+		else if(op == 1 && l <= p1[x].r * p1[x].r){
+			p[i] = true;
+			ans ++ ;
+			dfs(i,1);
+		}
+	} 
+	
+}
+
+signed main()
+{
+	cin >> n >> m;
+	for(int i = 1 ; i <= n ; i ++ )cin >> p1[i].x >> p1[i].y >> p1[i].r;
+	for(int i = 1 ; i <= m ; i ++ )cin >> p2[i].x >> p2[i].y >> p2[i].r;
+
+	for(int i = 1 ; i <= m ; i ++ ){
+//		cout << ans << endl;
+		dfs(i,2);
+	}
+	
+	cout << ans << endl;
+	
+	return 0;
+}
+```
+
+正解
+
+```c++
+#include<bits/stdc++.h>
+#define int long long
+#define endl '\n'
+using namespace std;
+const int N = 5 * 1e4 + 10;
+
+
+struct pp{
+	int x;
+	int y;
+	int r;
+};
+
+int n,m;
+pp a[N] , b[N];
+bool p[N];
+int ans;
+
+bool cmp(struct pp p1,struct pp p2){
+	return p1.x < p2.x;
+}
+
+int getDistance(int x1,int y1,int x2,int y2){
+	return (x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1);
+}
+
+void dfs(int x,int y,int r){
+	int leftMid , rightMid;
+	int L = 1 , R = n;
+	while(L <= R){
+		leftMid = (L + R) / 2;
+		if(a[leftMid].x < x - r)L = leftMid + 1;
+		else R = leftMid - 1;
+	}
+	
+	leftMid = L;
+	
+	L = 1 , R = n;
+	while(L <= R){
+		rightMid = (L + R) / 2;
+		if(a[rightMid].x <= x + r)L = rightMid + 1;
+		else R = rightMid - 1;
+	}
+	
+	for(int i = leftMid ; i <= rightMid ; i ++ ){
+		if(p[i])continue;
+		int len = getDistance(x,y,a[i].x,a[i].y);
+		if(len <= r * r){
+			ans ++ ;
+			p[i] = true;
+			dfs(a[i].x,a[i].y,a[i].r);
+		}
+	}
+	
+}
+
+signed main()
+{
+	cin >> n >> m;
+	
+	for(int i = 1 ; i <= n ; i ++ )
+		cin >> a[i].x >> a[i].y >> a[i].r;
+	
+	for(int i = 1 ; i <= m ; i ++ )
+		cin >> b[i].x >> b[i].y >> b[i].r;
+	
+	sort(a + 1,a + 1 + n,cmp);
+	for(int i = 1 ; i <= m && ans < n ; i ++ ){
+		dfs(b[i].x,b[i].y,b[i].r);
+	}
+	
+	cout << ans << endl;
+	
+	return 0;
+}
+```
+
