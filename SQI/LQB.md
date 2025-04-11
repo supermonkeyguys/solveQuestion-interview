@@ -2476,7 +2476,7 @@ signed main()
 
 # 4/3 25
 
-## [整数拼接](https://www.luogu.com.cn/problem/P8708)
+## [整数小拼接](https://www.luogu.com.cn/problem/P8708)
 
 ```c++
 #include<bits/stdc++.h>
@@ -3860,6 +3860,151 @@ signed main()
 	}
 	
 	cout << ans << endl;
+	
+	return 0;
+}
+```
+
+# 4/11 25
+
+## [整数拼接](https://www.luogu.com.cn/problem/P8712)
+
+#### 一些细节
+
+利用 `res += s[len][(k - t) % k]` 得到数学中的余数，例如在 C++ 中 −5 mod 3 = −2，而在数学中答案应该是 1
+
+如果我们想得到余数 1，可以用 `(k - t) % k`，实现 (3 − (5 mod 3)) mod 3 = 1
+
+```c++
+#include<bits/stdc++.h>
+#define int long long
+#define endl '\n'
+using namespace std;
+const int N = 1e5 + 10;
+
+int a[N]; 
+int s[11][N];
+
+signed main()
+{
+	int n,k;
+	cin >> n >> k;
+	for(int i = 1 ; i <= n ; i ++ ){
+		cin >> a[i];
+	}
+	
+	for(int i = 1 ; i <= n ; i ++ ){
+		int t = a[i] % k;
+		for(int j = 0 ; j <= 10 ; j ++ ){
+			s[j][t] ++ ;
+			t = t * 10 % k;
+		}
+	}
+	
+	int ans = 0;
+	for(int i = 1 ; i <= n ; i ++ ){
+		int t = a[i] % k;
+		int len = to_string(a[i]).size();
+		
+		ans += s[len][(k - t) % k];
+		int r = t;
+		
+		while(len -- )r = r * 10 % k;
+		
+		if(r == (k - t) % k)ans -- ;
+	}
+	
+	cout << ans << endl;
+	
+	return 0;
+}
+```
+
+## [岛屿数量](https://www.lanqiao.cn/problems/3513/learning/?page=1&first_category_id=1&second_category_id=3&name=%E5%B2%9B%E5%B1%BF)
+
+```c++
+#include<bits/stdc++.h>
+using namespace std;
+const int N = 55;
+
+char a[N][N];
+bool p[N][N];
+int n,m;
+int cnt = 1;
+int dx[4] = {-1,1,0,0};
+int dy[4] = {0,0,-1,1};
+
+bool dfs(int x,int y){
+	if(x == 0 || x == n - 1 || y == 0 || y == m - 1)return true;
+	
+	p[x][y] = true;
+		
+	for(int i = -1 ; i <= 1 ; i ++ ){
+		for(int j = -1 ; j <= 1 ; j ++ ){
+			int x1 = x + i;
+			int y1 = y + j;
+			if(x1 < 0 || x1 >= n || y1 < 0 || y1 >= m)continue;
+			
+			if(!p[x1][y1] && (a[x1][y1] == '0' || a[x1][y1] == '1' + cnt)){
+				if(dfs(x1,y1))return true;
+			}
+		}
+	}	
+	
+	return false;
+}
+
+void bfs(int x,int y){
+	
+	queue<pair<int,int>>q;
+	q.push({x,y});
+	a[x][y] = '1' + cnt;
+	
+	while(!q.empty()){
+		
+		auto t = q.front();
+		q.pop();
+		
+		for(int i = 0 ; i < 4 ; i ++ ){
+			int x1 = dx[i] + t.first;
+			int y1 = dy[i] + t.second;
+			if(x1 < 0 || x1 >= n || y1 < 0 || y1 >= m)continue;
+			
+			if(a[x1][y1] == '1'){
+				a[x1][y1] = '1' + cnt;
+				q.push({x1,y1});
+			}
+		}
+	}
+		
+}
+
+int main()
+{
+	int T;
+	cin >> T;
+	while(T -- ){
+		cin >> n >> m;
+		for(int i = 0 ; i < n ; i ++ ){
+				cin >> a[i];
+		}
+		
+		int res = 0;
+		cnt = 1;
+		for(int i = 0 ; i < n ; i ++ ){
+			for(int j = 0 ; j < m ; j ++ ){
+				if(a[i][j] == '1'){
+					bfs(i,j);
+					memset(p,0,sizeof p);
+					if(dfs(i,j))res ++ ;
+					cnt ++ ;
+				}
+			}
+		}
+		
+		cout << res << endl;
+		
+	}
 	
 	return 0;
 }
